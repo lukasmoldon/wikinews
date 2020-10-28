@@ -54,7 +54,7 @@ def download_articles(api_key, path_results, start, end):
 
 
 def load_articles(path_data):
-    with open("C:/Users/lukas/Downloads/nyt.json", "r") as fp:
+    with open(path_data) as fp:
         article_data = json.load(fp)
     return article_data
 
@@ -63,20 +63,18 @@ def load_articles(path_data):
 def get_article(article_data, year, month, count, article_property):
     return article_data[str(year)][str(month)][count][article_property]
 
-def get_documentType(articles):
-    docTypes = {}
+def get_Attributes(articles, attribute):
+    #Input articles from download_articles and an attribute like "abstract"
+    #Returns a list of all attributes of the given articles
+    attributes = []
     for y in articles.keys():
         for m in articles[y].keys():
             for a in articles[y][m]:
-                doc_type = articles[y][m][a]["document_type"]
-                if doc_type in docTypes:
-                    docTypes[doc_type] += 1
-                else:
-                    docTypes[doc_type] = 1
-    return docTypes
+                attributes.append(articles[y][m][a][attribute])
+    return attributes
 
-# download_articles("ldxpB4fi05f1WdxlQOPVKPYn9WaAgvry", "C:/Users/lukas/Downloads/nyt_month_response.json", date(2002, 1, 1), date(2002, 2, 1))
-# download_articles("ldxpB4fi05f1WdxlQOPVKPYn9WaAgvry", "C:/Users/lukas/Downloads/nyt.json", date(2001, 1, 1), date(2020, 10, 1))
+#download_articles("ldxpB4fi05f1WdxlQOPVKPYn9WaAgvry", "C:/Users/lukas/Downloads/nyt_month_response.json", date(2002, 1, 1), date(2002, 2, 1))
+#download_articles("ldxpB4fi05f1WdxlQOPVKPYn9WaAgvry", "nyt2019.json", date(2019, 1, 1), date(2019, 6, 1))
 
 #d = load_articles("C:/Users/lukas/Downloads/nyt.json")
 
