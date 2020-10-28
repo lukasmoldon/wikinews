@@ -63,7 +63,17 @@ def load_articles(path_data):
 def get_article(article_data, year, month, count, article_property):
     return article_data[str(year)][str(month)][count][article_property]
 
-
+def get_documentType(articles):
+    docTypes = {}
+    for y in articles.keys():
+        for m in articles[y].keys():
+            for a in articles[y][m]:
+                doc_type = articles[y][m][a]["document_type"]
+                if doc_type in docTypes:
+                    docTypes[doc_type] += 1
+                else:
+                    docTypes[doc_type] = 1
+    return docTypes
 
 # download_articles("ldxpB4fi05f1WdxlQOPVKPYn9WaAgvry", "C:/Users/lukas/Downloads/nyt_month_response.json", date(2002, 1, 1), date(2002, 2, 1))
 # download_articles("ldxpB4fi05f1WdxlQOPVKPYn9WaAgvry", "C:/Users/lukas/Downloads/nyt.json", date(2001, 1, 1), date(2020, 10, 1))
