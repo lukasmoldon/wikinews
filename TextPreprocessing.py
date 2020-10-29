@@ -3,6 +3,7 @@ from nltk.stem import PorterStemmer
 from nltk.corpus import stopwords 
 from nltk.tokenize import word_tokenize 
 import string
+import re
 
 
 stemmer = LancasterStemmer()
@@ -13,7 +14,11 @@ def stemSentence(sentence):
 
 def removeStopwords(sentence):
     tokens = word_tokenize(sentence)
-    return [w for w in tokens if not w in stopwords.words() and not w in string.punctuation and not w in ["’"]]
+    customStopwords = ["‘", "’"]
+    return [w for w in tokens if not w in stopwords.words() and not w in string.punctuation and not w in customStopwords]
+
+def removeNumbers(sentence):
+    return re.sub(r'\d+', '', sentence)
 
 def parseSentence(sentence):
-    return removeStopwords(stemSentence(sentence))
+    return removeStopwords(removeNumbers(stemSentence(sentence)))
