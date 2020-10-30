@@ -11,12 +11,12 @@ import json
 def download_articles(api_key, path_results, start, end):
     logging.basicConfig(format='%(asctime)s [%(levelname)s] - %(message)s', datefmt='%d-%m-%y %H:%M:%S', level=logging.DEBUG)
     url = "https://content.guardianapis.com/search?from-date={}&to-date={}&order-by=oldest&page-size=200&api-key={}&page=" # https://open-platform.theguardian.com/documentation/
+    # translating properties to nyt format:  key = theguardian format, value = nyt format
     properties = {"webTitle": "headline", "webPublicationDate": "pub_date", "webUrl": "web_url", "type": "document_type", "sectionName": "section_name"}
     data = {}
     cur_date = start
     cur_page = 1
     cnt = 1
-
 
     logging.info("Starting..")
     while cur_date != end + relativedelta(days=+1):
@@ -80,9 +80,11 @@ def get_article(article_data, year, month, count, article_property):
 
 
 
-# download_articles("f9f9bc35-de69-42ce-8089-3f786f325643", "/home/lmoldon/forschungspraktikum/theguardian.json", date(2002, 1, 29), date(2002, 2, 2))
-download_articles("f9f9bc35-de69-42ce-8089-3f786f325643", "/home/lmoldon/forschungspraktikum/theguardian.json", date(2001, 1, 1), date(2020, 10, 1))
+# file: theguardian.json ( 01.01.2001 - 01.10.2020 )
+#download_articles("f9f9bc35-de69-42ce-8089-3f786f325643", "/home/lmoldon/forschungspraktikum/theguardian.json", date(2001, 1, 1), date(2020, 10, 1))
+# file: theguardian_partition.json ( 01.01.2001 - 31.01.2001 )
+#download_articles("f9f9bc35-de69-42ce-8089-3f786f325643", "/home/lmoldon/forschungspraktikum/theguardian_partition.json", date(2001, 1, 1), date(2001, 1, 31))
 
-# d = load_articles("/home/lmoldon/forschungspraktikum/theguardian.json")
+#d = load_articles("/home/lmoldon/forschungspraktikum/theguardian.json")
 
-# print(get_article(d, 2002, 2, 21, "headline"))
+#print(get_article(d, 2002, 2, 21, "headline"))
