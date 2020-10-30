@@ -11,7 +11,7 @@ import json
 def download_articles(api_key, path_results, start, end):
     logging.basicConfig(format='%(asctime)s [%(levelname)s] - %(message)s', datefmt='%d-%m-%y %H:%M:%S', level=logging.INFO)
     url = "https://api.nytimes.com/svc/archive/v1/{}/{}.json?api-key={}" # https://developer.nytimes.com/docs/archive-product/1/overview
-    properties = ["headline", "pub_date", "web_url", "abstract", "snippet", "lead_paragraph", "keywords", "document_type", "type_of_material", "word_count", "section_name"]
+    properties = ["headline", "pub_date", "web_url", "abstract", "lead_paragraph", "keywords", "document_type", "type_of_material", "word_count", "section_name"]
     data = {}
     cur_date = start
 
@@ -63,9 +63,11 @@ def load_articles(path_data):
 def get_article(article_data, year, month, count, article_property):
     return article_data[str(year)][str(month)][count][article_property]
 
+
+
 def get_Attributes(articles, attribute):
-    #Input articles from download_articles and an attribute like "abstract"
-    #Returns a list of all attributes of the given articles
+    # Input articles from download_articles and an attribute like "abstract"
+    # Returns a list of all attributes of the given articles
     attributes = []
     for y in articles.keys():
         for m in articles[y].keys():
@@ -73,9 +75,13 @@ def get_Attributes(articles, attribute):
                 attributes.append(articles[y][m][a][attribute])
     return attributes
 
-#download_articles("ldxpB4fi05f1WdxlQOPVKPYn9WaAgvry", "C:/Users/lukas/Downloads/nyt_month_response.json", date(2002, 1, 1), date(2002, 2, 1))
-#download_articles("ldxpB4fi05f1WdxlQOPVKPYn9WaAgvry", "nyt2019.json", date(2019, 1, 1), date(2019, 6, 1))
 
-#d = load_articles("C:/Users/lukas/Downloads/nyt.json")
+
+# file: nyt.json ( 01.01.2001 - 01.10.2020 )
+#download_articles("ldxpB4fi05f1WdxlQOPVKPYn9WaAgvry", "/home/lmoldon/forschungspraktikum/nyt.json", date(2001, 1, 1), date(2020, 10, 1))
+# file: nyt_partition.json ( 01.01.2001 - 31.01.2001 ) (start = end (!) due to monthly scraping/download)
+#download_articles("ldxpB4fi05f1WdxlQOPVKPYn9WaAgvry", "/home/lmoldon/forschungspraktikum/nyt_partition.json", date(2001, 1, 1), date(2001, 1, 1))
+
+#d = load_articles("/home/lmoldon/forschungspraktikum/nyt.json")
 
 #print(get_article(d, 2001, 2, 29, "headline"))
