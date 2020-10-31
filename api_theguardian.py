@@ -68,51 +68,7 @@ def download_articles(api_key, path_results, start, end):
 
 
 
-def load_articles(path_data):
-    with open(path_data) as fp:
-        articles = json.load(fp)
-    return articles
-
-
-
-def get_article(articles, year, month, count, article_property):
-    return articles[str(year)][str(month)][count][article_property]
-
-
-
-def get_attributes(articles, attribute):
-    # Input: articles from download_articles and an attribute like "abstract"
-    # Returns: list of all attributes of the given articles
-    attributes = set()
-    for y in articles.keys():
-        for m in articles[y].keys():
-            for a in articles[y][m]:
-                attributes.add(articles[y][m][a][attribute])
-    return attributes
-
-
-
-def count_attributes(articles, attribute):
-    # Input: articles from download_articles and an attribute like "abstract"
-    # Returns: counts all attributes of the given articles
-    attributes = {}
-    for y in articles.keys():
-        for m in articles[y].keys():
-            for a in articles[y][m]:
-                val = articles[y][m][a][attribute]
-                if val in attributes:
-                    attributes[val] += 1
-                else:
-                    attributes[val] = 1
-    return attributes
-
-
-
 # file: theguardian.json ( 01.01.2001 - 01.10.2020 )
 #download_articles("f9f9bc35-de69-42ce-8089-3f786f325643", "/home/lmoldon/forschungspraktikum/theguardian.json", date(2001, 1, 1), date(2020, 10, 1))
 # file: theguardian_partition.json ( 01.01.2001 - 31.01.2001 )
 #download_articles("f9f9bc35-de69-42ce-8089-3f786f325643", "/home/lmoldon/forschungspraktikum/theguardian_partition.json", date(2001, 1, 1), date(2001, 1, 31))
-
-#d = load_articles("/home/lmoldon/forschungspraktikum/theguardian.json")
-
-#print(get_article(d, 2002, 2, 21, "headline"))

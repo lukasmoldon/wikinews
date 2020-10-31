@@ -53,51 +53,7 @@ def download_articles(api_key, path_results, start, end):
 
 
 
-def load_articles(path_data):
-    with open(path_data) as fp:
-        articles = json.load(fp)
-    return articles
-
-
-
-def get_article(articles, year, month, count, article_property):
-    return articles[str(year)][str(month)][count][article_property]
-
-
-
-def get_attributes(articles, attribute):
-    # Input: articles from download_articles and an attribute like "abstract"
-    # Returns: list of all attributes of the given articles
-    attributes = set()
-    for y in articles.keys():
-        for m in articles[y].keys():
-            for a in articles[y][m]:
-                attributes.add(articles[y][m][a][attribute])
-    return attributes
-
-
-
-def count_attributes(articles, attribute):
-    # Input: articles from download_articles and an attribute like "abstract"
-    # Returns: counts all attributes of the given articles
-    attributes = {}
-    for y in articles.keys():
-        for m in articles[y].keys():
-            for a in articles[y][m]:
-                val = articles[y][m][a][attribute]
-                if val in attributes:
-                    attributes[val] += 1
-                else:
-                    attributes[val] = 1
-    return attributes
-
-
-
 # file: nyt.json ( 01.01.2001 - 01.10.2020 )
 #download_articles("ldxpB4fi05f1WdxlQOPVKPYn9WaAgvry", "/home/lmoldon/forschungspraktikum/nyt.json", date(2001, 1, 1), date(2020, 10, 1))
 # file: nyt_partition.json ( 01.01.2001 - 31.01.2001 ) (start = end (!) due to monthly scraping/download)
 #download_articles("ldxpB4fi05f1WdxlQOPVKPYn9WaAgvry", "/home/lmoldon/forschungspraktikum/nyt_partition.json", date(2001, 1, 1), date(2001, 1, 1))
-
-#d = load_articles("/home/lmoldon/forschungspraktikum/nyt.json")
-
-#print(get_article(d, 2001, 2, 29, "headline"))
