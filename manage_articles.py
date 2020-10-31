@@ -10,8 +10,33 @@ def load_articles(path_data):
 
 
 
+def store_articles(articles, path_data):
+    with open(path_data, "w") as fp:
+        json.dump(articles, fp)
+
+
+
 def get_article(articles, year, month, count, article_property):
     return articles[str(year)][str(month)][count][article_property]
+
+
+
+def filter_articles(articles, restrictions):
+    # resrictions:   {attribute_name: [values which pass the filter and remain in data]}
+    result = {}
+    for y in articles.keys():
+        result[y] = {}
+        for m in articles[y].keys():
+            result[y][m] = {}
+            for a in articles[y][m]:
+                accept = True
+                for restriction_attribute in restrictions:
+                    if articles[y][m][a][restriction_attribute] not in restrictions[restriction_attribute]:
+                        accept = False
+                        break
+                if accept:
+                    result[y][m][a] = articles[y][m][a]
+    return result
 
 
 
@@ -39,7 +64,8 @@ def count_attributes(articles, attribute):
                     attributes[val] += 1
                 else:
                     attributes[val] = 1
-    return attributes
+    return {k: v for k, v in sorted(attributes.items(), key=lambda item: item[1], reverse=True)}
+
 
 
 
@@ -49,5 +75,10 @@ def count_attributes(articles, attribute):
 #print(get_article(d_nyt, 2002, 2, 21, "headline"))
 
 #print(count_attributes(d_nyt, "type_of_material"))
-
 #print(count_attributes(d_theguardian, "document_type"))
+
+#d_nyt_reduced = filter_articles(d_nyt, {"document_type": ["article"], "type_of_material": ["News"], "section_name": ["World"]})
+#d_theguardian_reduced = filter_articles(d_theguardian, {"document_type": ["article"], "section_name": ["World news"]})
+
+#store_articles(d_nyt_reduced, "/home/lmoldon/forschungspraktikum/nyt_reduced.json")
+#store_articles(d_theguardian_reduced, "/home/lmoldon/forschungspraktikum/theguardian_reduced.json")
