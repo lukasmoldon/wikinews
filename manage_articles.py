@@ -1,5 +1,7 @@
 import logging
 import json
+import datetime
+import random
 
 
 
@@ -21,8 +23,9 @@ def get_article(articles, year, month, count, article_property):
 
 
 
-def filter_articles(articles, restrictions):
+def filter_articles(articles, restrictions, start=None, end=None):
     # resrictions:   {attribute_name: [values which pass the filter and remain in data]}
+    # start/end:     date(YEAR, MONTH, DAY) for searching articles between start and end
     result = {}
     for y in articles.keys():
         result[y] = {}
@@ -30,6 +33,18 @@ def filter_articles(articles, restrictions):
             result[y][m] = {}
             for a in articles[y][m]:
                 accept = True
+                if start != None or end != None:
+                    timestamp = articles[y][m][a]["pub_date"]
+                    if timestamp.count("Z") == 1:
+                        date = datetime.datetime.strptime(timestamp, "%Y-%m-%dT%H:%M:%SZ").date() # theguardian timestamp format
+                    else:
+                        date = datetime.datetime.strptime(timestamp, "%Y-%m-%dT%H:%M:%S+%f").date() # nyt timestamp format
+                    if start != None:
+                        if date < start:
+                            accept = False
+                    if end != None:
+                        if date > end:
+                            accept = False
                 for restriction_attribute in restrictions:
                     if articles[y][m][a][restriction_attribute] not in restrictions[restriction_attribute]:
                         accept = False
@@ -68,6 +83,21 @@ def count_attributes(articles, attribute):
 
 
 
+def generate_sample(articles, amount):
+    result = {}
+    while len(result) != amount:
+        try:
+            y = random.choice(list(articles.keys()))
+            m = random.choice(list(articles[y].keys()))
+            a = random.choice(list(articles[y][m].keys()))
+            result[y+"-"+m+"-"+a] = articles[y][m][a]
+            result[y+"-"+m+"-"+a]["ground_truth"] = [""]
+        except:
+            pass
+    return result
+
+
+
 
 #d_nyt = load_articles("/home/lmoldon/forschungspraktikum/nyt.json")
 #d_theguardian = load_articles("/home/lmoldon/forschungspraktikum/theguardian.json")
@@ -79,6 +109,10 @@ def count_attributes(articles, attribute):
 
 #d_nyt_reduced = filter_articles(d_nyt, {"document_type": ["article"], "type_of_material": ["News"], "section_name": ["World"]})
 #d_theguardian_reduced = filter_articles(d_theguardian, {"document_type": ["article"], "section_name": ["World news"]})
-
 #store_articles(d_nyt_reduced, "/home/lmoldon/forschungspraktikum/nyt_reduced.json")
 #store_articles(d_theguardian_reduced, "/home/lmoldon/forschungspraktikum/theguardian_reduced.json")
+
+#d_nyt_ground_truth = generate_sample(filter_articles(d_nyt, {"document_type": ["article"], "type_of_material": ["News"], "section_name": ["World"]}), 200)
+#d_theguardian_ground_truth = generate_sample(filter_articles(d_theguardian, {"document_type": ["article"], "section_name": ["World news"]}), 200)
+#store_articles(d_nyt_ground_truth, "/home/lmoldon/forschungspraktikum/nyt_ground_truth.json")
+#store_articles(d_theguardian_ground_truth, "/home/lmoldon/forschungspraktikum/theguardian_ground_truth.json")
