@@ -2,6 +2,8 @@ import logging
 import json
 import datetime
 import random
+import regex
+import TextPreprocessing
 
 
 
@@ -96,7 +98,35 @@ def generate_sample(articles, amount):
             pass
     return result
 
+def get_articles_as_list(articles):
+    result = []
+    for y in articles.keys():
+        for m in articles[y].keys():
+            for a in articles[y][m]:
+                result.append(articles[y][m][a])
+    return result
 
+def getCalendarWeek(dat):
+    match = regex.match(r"\d{4}-\d{2}-\d{2}", dat).group(0)
+    return datetime.datetime.strptime(match,'%Y-%m-%d').isocalendar()[1]
+    
+def getYear(dat):
+    match = regex.match(r"\d{4}-\d{2}-\d{2}", dat).group(0)
+    return datetime.datetime.strptime(match,'%Y-%m-%d').year
+
+def getWordCounts(articles):
+    result = {}
+    articles = get_articles_as_list(articles)
+    for a in articles:
+        key = (getYear(a['pub_date']),getCalendarWeek(a['pub_date']))
+        if key not in result:
+            result[key] = {}
+        for w in TextPreprocessing.parseSentence(a['abstract']):
+            if w not in result[key]:
+                result[key][w] = 1
+            else: 
+                result[key][w] += 1 
+    return result
 
 
 #d_nyt = load_articles("/home/lmoldon/forschungspraktikum/nyt.json")
