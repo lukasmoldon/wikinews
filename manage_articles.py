@@ -3,7 +3,7 @@ import json
 import datetime
 import random
 import regex
-import TextPreprocessing
+import TextPreprocessing as txt
 
 
 
@@ -99,6 +99,7 @@ def generate_sample(articles, amount):
     return result
 
 def get_articles_as_list(articles):
+    #returns a flat list of all articles given as input
     result = []
     for y in articles.keys():
         for m in articles[y].keys():
@@ -115,19 +116,25 @@ def getYear(dat):
     return datetime.datetime.strptime(match,'%Y-%m-%d').year
 
 def getWordCounts(articles):
+    #returns a dict of dicts with number of distinct words in each calendar week
     result = {}
     articles = get_articles_as_list(articles)
     for a in articles:
         key = (getYear(a['pub_date']),getCalendarWeek(a['pub_date']))
         if key not in result:
             result[key] = {}
-        for w in TextPreprocessing.parseSentence(a['abstract']):
+        for w in txt.parseSentence(a['abstract']):
             if w not in result[key]:
                 result[key][w] = 1
             else: 
                 result[key][w] += 1 
     return result
 
+def getTopWordsForWeek(words, n=10):
+    #words input is a dict returned by getWordCounts function
+    #n is the number of top n words returned for each calendar week
+    for k in words.keys():
+        print(sorted(words[k].items(), key=lambda x:x[1],reverse=True)[:n])
 
 #d_nyt = load_articles("/home/lmoldon/forschungspraktikum/nyt.json")
 #d_theguardian = load_articles("/home/lmoldon/forschungspraktikum/theguardian.json")

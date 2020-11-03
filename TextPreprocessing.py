@@ -14,14 +14,13 @@ def stemSentence(sentence):
 
 def removeStopwords(sentence):
     tokens = word_tokenize(sentence)
-    customStopwords = ["‘", "’"]
+    customStopwords = ["‘", "’","-",".","”","“",'.',"new","said",'—']
     allStopwords = stopwords.words() + word_tokenize(string.punctuation) + customStopwords
-    return [w for w in tokens if not w in allStopwords]
+    return [w for w in tokens if w not in allStopwords]
 
 def removeNumbers(sentence):
     return re.sub(r'\d+', '', sentence)
 
 def parseSentence(sentence):
-    return removeStopwords(removeNumbers(stemSentence(sentence)))
-
+    return removeStopwords(stemSentence(removeNumbers(sentence)))
 
