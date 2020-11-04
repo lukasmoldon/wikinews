@@ -136,6 +136,16 @@ def getTopWordsForWeek(words, n=10):
     for k in words.keys():
         print(sorted(words[k].items(), key=lambda x:x[1],reverse=True)[:n])
 
+def getDistinctWords(words):
+    #words input is a dict returned by getWordCounts function
+    #returns a list containing all distinct words occuring in the dict
+    result = []
+    for k in words.keys():
+        for w in words[k].items():
+            if w[0] not in result:
+                result.append(w[0])
+    return result
+
 #d_nyt = load_articles("/home/lmoldon/forschungspraktikum/nyt.json")
 #d_theguardian = load_articles("/home/lmoldon/forschungspraktikum/theguardian.json")
 
