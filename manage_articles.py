@@ -133,8 +133,11 @@ def getWordCounts(articles):
 def getTopWordsForWeek(words, n=10):
     #words input is a dict returned by getWordCounts function
     #n is the number of top n words returned for each calendar week
+    result = []
     for k in words.keys():
-        print(sorted(words[k].items(), key=lambda x:x[1],reverse=True)[:n])
+        result.append((k,sorted(words[k].items(), key=lambda x:x[1],reverse=True)[:n]))
+    return result
+    
 
 def getDistinctWords(words):
     #words input is a dict returned by getWordCounts function
