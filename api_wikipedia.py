@@ -50,3 +50,4 @@ def plot_counts(title, start, end, language_edition="en"):
 # Influence of complex / not trivial connections
 # -> "Stellar corona" is an aura of plasma that surrounds the sun (but has nothing to do with the coronavirus besides naming)
 # plot_counts("Stellar_corona", date(2015,7,1), date(2020,10,20))
+plot_counts("Government_shutdowns_in_the_United_States", date(2019,1,1), date(2019,12,31))

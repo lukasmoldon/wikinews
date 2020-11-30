@@ -115,7 +115,7 @@ def getYear(dat):
     match = regex.match(r"\d{4}-\d{2}-\d{2}", dat).group(0)
     return datetime.datetime.strptime(match,'%Y-%m-%d').year
 
-def getWordCounts(articles):
+def getWordCounts(articles,attribute='abstract'):
     #returns a dict of dicts with number of distinct words in each calendar week
     result = {}
     articles = get_articles_as_list(articles)
@@ -123,7 +123,7 @@ def getWordCounts(articles):
         key = (getYear(a['pub_date']),getCalendarWeek(a['pub_date']))
         if key not in result:
             result[key] = {}
-        for w in txt.parseSentence(a['abstract']):
+        for w in txt.parseSentence(a['headline']):
             if w not in result[key]:
                 result[key][w] = 1
             else: 
@@ -148,6 +148,15 @@ def getDistinctWords(words):
             if w[0] not in result:
                 result.append(w[0])
     return result
+
+def getCountPerWeek(words, word):
+    weeks = []
+    for w in words.keys():
+        if word in words[w]:
+            weeks.append((w,words[w][word]))
+        else:
+            weeks.append((w,0))
+    return weeks
 
 #d_nyt = load_articles("/home/lmoldon/forschungspraktikum/nyt.json")
 #d_theguardian = load_articles("/home/lmoldon/forschungspraktikum/theguardian.json")
