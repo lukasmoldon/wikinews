@@ -4,7 +4,7 @@ from nltk.corpus import stopwords
 from nltk.tokenize import word_tokenize 
 import string
 import re
-
+from wordfreq import zipf_frequency
 
 stemmer = LancasterStemmer()
 #stemmer = PorterStemmer()
@@ -24,3 +24,5 @@ def removeNumbers(sentence):
 def parseSentence(sentence):
     return removeStopwords(stemSentence(removeNumbers(sentence)))
 
+def wordfreq(word):
+    return zipf_frequency(word,'en')
