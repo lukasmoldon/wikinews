@@ -5,25 +5,17 @@ import random
 import regex
 import TextPreprocessing as txt
 
-
-
 def load_articles(path_data):
     with open(path_data) as fp:
         articles = json.load(fp)
     return articles
 
-
-
 def store_articles(articles, path_data):
     with open(path_data, "w") as fp:
         json.dump(articles, fp)
 
-
-
 def get_article(articles, year, month, count, article_property):
     return articles[str(year)][str(month)][count][article_property]
-
-
 
 def filter_articles(articles, restrictions, start=None, end=None):
     # resrictions:   {attribute_name: [values which pass the filter and remain in data]}
@@ -55,8 +47,6 @@ def filter_articles(articles, restrictions, start=None, end=None):
                     result[y][m][a] = articles[y][m][a]
     return result
 
-
-
 def get_attributes(articles, attribute):
     # Input: articles from download_articles and an attribute like "abstract"
     # Returns: list of all attributes of the given articles
@@ -66,8 +56,6 @@ def get_attributes(articles, attribute):
             for a in articles[y][m]:
                 attributes.add(articles[y][m][a][attribute])
     return attributes
-
-
 
 def count_attributes(articles, attribute):
     # Input: articles from download_articles and an attribute like "abstract"
@@ -82,8 +70,6 @@ def count_attributes(articles, attribute):
                 else:
                     attributes[val] = 1
     return {k: v for k, v in sorted(attributes.items(), key=lambda item: item[1], reverse=True)}
-
-
 
 def generate_sample(articles, amount):
     result = {}
@@ -157,6 +143,7 @@ def getCountPerWeek(words, word):
         else:
             weeks.append((w,0))
     return weeks
+
 
 #d_nyt = load_articles("/home/lmoldon/forschungspraktikum/nyt.json")
 #d_theguardian = load_articles("/home/lmoldon/forschungspraktikum/theguardian.json")

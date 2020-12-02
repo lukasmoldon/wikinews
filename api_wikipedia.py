@@ -20,9 +20,10 @@ def get_counts(title, start, end, language_edition="en"):
             return [], []
     else:
         print(response.status_code, response.reason)
+        return []
     return timestamp_list, viewcount_list
 
-def get_articles(keywords):
+def search_articles(keywords):
     url = "https://en.wikipedia.org/w/api.php"
     if type(keywords) == list:
         keywords = " ".join(keywords)
@@ -75,4 +76,4 @@ def plot_counts(title, start, end, language_edition="en"):
 
 #plot_counts("Moon", date(2019,1,1), date(2019,12,31))
 
-#print(get_articles("corona virus"))
+#print(search_articles(["corona", "virus"]))
