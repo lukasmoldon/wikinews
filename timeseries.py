@@ -6,17 +6,23 @@ def getFirstDateFromIsoWeek(p_year,p_week):
     return firstdayofweek
 
 class Timepoint:
-    def __init__(self,week,count):
-        self.isoweek = week
-        self.year = week[0]
-        self.date = getFirstDateFromIsoWeek(week[0],week[1])
+    def __init__(self,countPerWeek):
+        self.isoweek = countPerWeek[0]
+        self.year = countPerWeek[0][0]
+        self.date = getFirstDateFromIsoWeek(countPerWeek[0][0],countPerWeek[0][1])
+        self.count = countPerWeek[1]
 
 class Timeseries:
-    def __init__(self,word,weeks,counts):
-        if len(weeks) == len(counts):
-            self.timepoints = []
-            for i in range(len(weeks)):
-                self.timepoints.append(Timepoint(weeks[i],counts[i]))
-            self.word = word
-            self.outliers = statistics.findOutliers(counts)
-            self.variance = statistics.getVariance(counts)
+    def getCounts(self):
+        return [x.count for x in self.timepoints]
+    def __init__(self,word,countsPerWeek):
+        self.timepoints = []
+        for i in range(len(countsPerWeek)):
+            self.timepoints.append(Timepoint(countsPerWeek[i]))
+        self.word = word
+        self.outliers = statistics.findOutliers(self.getCounts())
+        self.variance = statistics.getVariance(self.getCounts())
+    
+x = ('year',[((2019,1),38),((2019,2),10),((2019,3),1)])
+ts = Timeseries(x[0],x[1])
+p = 5
