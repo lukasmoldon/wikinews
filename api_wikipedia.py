@@ -2,7 +2,6 @@ from datetime import date
 import requests
 import matplotlib.pyplot as plt
 
-
 def get_counts(title, start, end, language_edition="en"):
     timestamp_list = []
     viewcount_list = []
@@ -21,8 +20,34 @@ def get_counts(title, start, end, language_edition="en"):
             return [], []
     else:
         print(response.status_code, response.reason)
+        return []
     return timestamp_list, viewcount_list
 
+def search_articles(keywords):
+    url = "https://en.wikipedia.org/w/api.php"
+    if type(keywords) == list:
+        keywords = " ".join(keywords)
+    params = {
+        "action": "query",
+        "format": "json",
+        "list": "search",
+        "srsearch": keywords
+    }
+    response = requests.get(url=url, params=params)
+    if response.status_code == 200:
+        data = {}
+        i = 0
+        try:
+            for item in response.json()["query"]["search"]:
+                if "disambiguation" not in item["title"]:
+                    data[i] = item["title"].replace(" ", "_")
+                i += 1
+        except KeyError:
+            return []
+    else:
+        print(response.status_code, response.reason)
+        return []
+    return data
 
 def plot_counts(title, start, end, language_edition="en"):
     x, y = get_counts(title,start,end)
@@ -31,8 +56,6 @@ def plot_counts(title, start, end, language_edition="en"):
         plt.plot(x,y)
         plt.title("{} ({})".format(title, language_edition))
         plt.show()
-
-
 
 
 # seasonality pattern
@@ -50,4 +73,7 @@ def plot_counts(title, start, end, language_edition="en"):
 # Influence of complex / not trivial connections
 # -> "Stellar corona" is an aura of plasma that surrounds the sun (but has nothing to do with the coronavirus besides naming)
 # plot_counts("Stellar_corona", date(2015,7,1), date(2020,10,20))
-plot_counts("Moon", date(2019,1,1), date(2019,12,31))
+
+#plot_counts("Moon", date(2019,1,1), date(2019,12,31))
+
+#print(search_articles(["corona", "virus"]))

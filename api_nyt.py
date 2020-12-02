@@ -6,8 +6,6 @@ import requests
 import logging
 import json
 
-
-
 def download_articles(api_key, path_results, start, end):
     logging.basicConfig(format='%(asctime)s [%(levelname)s] - %(message)s', datefmt='%d-%m-%y %H:%M:%S', level=logging.INFO)
     url = "https://api.nytimes.com/svc/archive/v1/{}/{}.json?api-key={}" # https://developer.nytimes.com/docs/archive-product/1/overview
@@ -50,7 +48,6 @@ def download_articles(api_key, path_results, start, end):
         json.dump(data, fp)
 
     logging.info("Done!")
-
 
 
 # file: nyt.json ( 01.01.2001 - 01.10.2020 )

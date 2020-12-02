@@ -6,8 +6,6 @@ import requests
 import logging
 import json
 
-
-
 def download_articles(api_key, path_results, start, end):
     logging.basicConfig(format='%(asctime)s [%(levelname)s] - %(message)s', datefmt='%d-%m-%y %H:%M:%S', level=logging.DEBUG)
     url = "https://content.guardianapis.com/search?from-date={}&to-date={}&order-by=oldest&page-size=200&api-key={}&page=" # https://open-platform.theguardian.com/documentation/
@@ -65,7 +63,6 @@ def download_articles(api_key, path_results, start, end):
         json.dump(data, fp)
 
     logging.info("Done!")
-
 
 
 # file: theguardian.json ( 01.01.2001 - 01.10.2020 )
