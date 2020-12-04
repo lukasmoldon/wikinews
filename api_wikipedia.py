@@ -35,19 +35,43 @@ def search_articles(keywords):
     }
     response = requests.get(url=url, params=params)
     if response.status_code == 200:
-        data = {}
-        i = 0
+        ranking = {}
+        i = 1
         try:
             for item in response.json()["query"]["search"]:
                 if "disambiguation" not in item["title"]:
-                    data[i] = item["title"].replace(" ", "_")
-                i += 1
+                    ranking[i] = item["title"].replace(" ", "_")
+                    i += 1
         except KeyError:
             return []
     else:
         print(response.status_code, response.reason)
         return []
-    return data
+    return ranking
+
+def get_creationdates(articlename):
+    url = "https://en.wikipedia.org/w/api.php"
+    params = {
+        "action": "query",
+        "prop": "revisions",
+        "titles": articlename,
+        "rvdir": "newer",
+        "rvlimit": 1,
+        "rvprop": "timestamp|user",
+        "rvslots": "main",
+        "formatversion": "2",
+        "format": "json"
+    }
+    response = requests.get(url=url, params=params)
+    if response.status_code == 200:
+        i = 1
+        try:
+            return response.json()["query"]["pages"][0]["revisions"][0]["timestamp"]
+        except KeyError:
+            return None
+    else:
+        print(response.status_code, response.reason)
+        return None
 
 def plot_counts(title, start, end, language_edition="en"):
     x, y = get_counts(title,start,end)
@@ -77,3 +101,4 @@ def plot_counts(title, start, end, language_edition="en"):
 #plot_counts("Moon", date(2019,1,1), date(2019,12,31))
 
 #print(search_articles(["corona", "virus"]))
+print(get_creationdates("2020_United_States_presidential_election"))
