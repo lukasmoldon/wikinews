@@ -1,4 +1,6 @@
 from datetime import date
+import time
+import datetime
 import requests
 import matplotlib.pyplot as plt
 
@@ -23,7 +25,7 @@ def get_counts(title, start, end, language_edition="en"):
         return []
     return timestamp_list, viewcount_list
 
-def search_articles(keywords):
+def search_articles(keywords, nmax=10, date=None):
     url = "https://en.wikipedia.org/w/api.php"
     if type(keywords) == list:
         keywords = " ".join(keywords)
@@ -39,17 +41,23 @@ def search_articles(keywords):
         i = 1
         try:
             for item in response.json()["query"]["search"]:
-                if "disambiguation" not in item["title"]:
-                    ranking[i] = item["title"].replace(" ", "_")
-                    i += 1
+                if "disambiguation" not in item["title"] and i <= nmax:
+                    if date == None:
+                        ranking[i] = item["title"].replace(" ", "_")
+                        i += 1
+                    else:
+                        time.sleep(1)
+                        if get_creationdate(item["title"]) <= date:
+                            ranking[i] = item["title"].replace(" ", "_")
+                            i += 1
         except KeyError:
-            return []
+            return {}
     else:
         print(response.status_code, response.reason)
-        return []
+        return {}
     return ranking
 
-def get_creationdates(articlename):
+def get_creationdate(articlename):
     url = "https://en.wikipedia.org/w/api.php"
     params = {
         "action": "query",
@@ -66,7 +74,8 @@ def get_creationdates(articlename):
     if response.status_code == 200:
         i = 1
         try:
-            return response.json()["query"]["pages"][0]["revisions"][0]["timestamp"]
+            timestamp = response.json()["query"]["pages"][0]["revisions"][0]["timestamp"]
+            return datetime.datetime.strptime(timestamp, "%Y-%m-%dT%H:%M:%SZ").date()
         except KeyError:
             return None
     else:
@@ -100,5 +109,8 @@ def plot_counts(title, start, end, language_edition="en"):
 
 #plot_counts("Moon", date(2019,1,1), date(2019,12,31))
 
-#print(search_articles(["corona", "virus"]))
-print(get_creationdates("2020_United_States_presidential_election"))
+#print(search_articles("9/11"))
+#print(search_articles(["9/11", "attacks", "New", "York"]))
+#print(get_creationdate("September_11_attacks"))
+#print(get_creationdate("Aftermath_of_the_September_11_attacks"))
+#print(search_articles(["9/11", "attacks", "New", "York"], date=date(2001,11,22))) # e.g. on 2001-11-22 9/11 was mentioned in the news, not all related articles created yet
