@@ -1,4 +1,4 @@
-from datetime import date
+from datetime import date, timedelta
 import time
 import datetime
 import requests
@@ -24,7 +24,8 @@ def get_counts(title, start, end, language_edition="en"):
         return []
     return timestamp_list, viewcount_list
 
-def search_articles(keywords, nmax=10, date=None):
+def search_articles(keywords, nmax=10, date=None, timeout=10):
+    start = datetime.datetime.now()
     url = "https://en.wikipedia.org/w/api.php"
     if type(keywords) == list:
         keywords = " ".join(keywords)
@@ -40,7 +41,10 @@ def search_articles(keywords, nmax=10, date=None):
         i = 1
         try:
             for item in response.json()["query"]["search"]:
-                if "disambiguation" not in item["title"] and i <= nmax:
+                now = datetime.datetime.now()
+                if start +  timedelta(seconds=timeout) < now:
+                    break
+                elif "disambiguation" not in item["title"] and i <= nmax:
                     if date == None:
                         ranking[i] = item["title"].replace(" ", "_")
                         i += 1
@@ -108,4 +112,4 @@ def get_creationdate(articlename):
 #print(search_articles(["9/11", "attacks", "New", "York"]))
 #print(get_creationdate("September_11_attacks"))
 #print(get_creationdate("Aftermath_of_the_September_11_attacks"))
-#print(search_articles(["9/11", "attacks", "New", "York"], date=date(2001,11,22))) # e.g. on 2001-11-22 9/11 was mentioned in the news, not all related articles created yet
+print(search_articles(["9/11", "attacks", "New", "York"], date=date(2001,11,22))) # e.g. on 2001-11-22 9/11 was mentioned in the news, not all related articles created yet
