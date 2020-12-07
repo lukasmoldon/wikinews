@@ -15,6 +15,8 @@ class Timepoint:
 class Timeseries:
     def getCounts(self):
         return [x.count for x in self.timepoints]
+    def getDates(self):
+        return [x.date for x in self.timepoints]
     def __init__(self,word,countsPerWeek):
         self.timepoints = []
         for i in range(len(countsPerWeek)):
@@ -22,7 +24,3 @@ class Timeseries:
         self.word = word
         self.outliers = statistics.findOutliers(self.getCounts())
         self.variance = statistics.getVariance(self.getCounts())
-    
-x = ('year',[((2019,1),38),((2019,2),10),((2019,3),1)])
-ts = Timeseries(x[0],x[1])
-p = 5

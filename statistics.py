@@ -4,13 +4,17 @@ import matplotlib.pyplot as plt
 def getVariance(dataset):
     return np.var(dataset)
 
-def findOutliers(dataset):
+def findOutliers(dataset):  
+    mean = np.mean(dataset)
+    std = np.std(dataset)
+    out = std*3
+    lowerLimit = mean-out
+    upperLimit = mean+out
+    
     outliers=[]
-    threshold=3
-    for y in dataset:
-        zScore= (y - np.mean(dataset))/np.std(dataset) 
-        if np.abs(zScore) > threshold:
-            outliers.append(y)
+    for datapoint in dataset:
+        if datapoint > upperLimit or datapoint < lowerLimit:
+            outliers.append(datapoint)
     return outliers
 
 def plot(word,dataset,timepoints):

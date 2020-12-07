@@ -107,7 +107,9 @@ def plot_counts(title, start, end, language_edition="en"):
 # -> "Stellar corona" is an aura of plasma that surrounds the sun (but has nothing to do with the coronavirus besides naming)
 # plot_counts("Stellar_corona", date(2015,7,1), date(2020,10,20))
 
-#plot_counts("Moon", date(2019,1,1), date(2019,12,31))
+
+#plot_counts("Jussie_Smollett", date(2019,1,1), date(2019,12,31))
+
 
 #print(search_articles("9/11"))
 #print(search_articles(["9/11", "attacks", "New", "York"]))

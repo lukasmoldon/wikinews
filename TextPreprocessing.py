@@ -2,6 +2,7 @@ from nltk.stem import LancasterStemmer
 from nltk.stem import PorterStemmer
 from nltk.corpus import stopwords 
 from nltk.tokenize import word_tokenize 
+import spacy
 import nltk
 import string
 import re
@@ -29,6 +30,15 @@ def parseSentence(sentence):
 
 def wordfreq(word):
     return zipf_frequency(word,'en')
+
+def getNames(word):
+    names = []
+    nlp = spacy.load("en_core_web_sm")
+    doc = nlp(word)
+    for token in doc:
+        if token.ent_type_ == "PERSON" or token.pos_ == "PROPN":
+            names.append(token.text)
+    return names
 
 
 '''Possible tags according to https://medium.com/@gianpaul.r/tokenization-and-parts-of-speech-pos-tagging-in-pythons-nltk-library-2d30f70af13b
