@@ -187,7 +187,41 @@ def subsequence_counts(sequences, minLength=2, minCount=2):
             result.append([el, counts[el]])
     return result
 
-
+def restore_keyword(keyword, articles, start=None, end=None, searchrange=None, minLength=2, minCount=5, useAbstract=True):
+    data = []
+    articles = get_articles_as_list(articles)
+    for a in articles:
+        match = True
+        if "abstract" in a and useAbstract:
+            content = txt.parseSentence(a["headline"] + " " + a["abstract"])
+        else:
+            content = txt.parseSentence(a["headline"])
+        if keyword not in content:
+            match = False
+        if match and (start != None or end != None):
+            timestamp = a["pub_date"]
+            if timestamp.count("Z") == 1:
+                date = datetime.datetime.strptime(timestamp, "%Y-%m-%dT%H:%M:%SZ").date() # theguardian timestamp format
+            else:
+                date = datetime.datetime.strptime(timestamp, "%Y-%m-%dT%H:%M:%S+%f").date() # nyt timestamp format
+            if start != None:
+                if date < start:
+                    match = False
+            if end != None:
+                if date > end:
+                    match = False
+        if match:
+            if searchrange != None:
+                for index in [i for i, v in enumerate(content) if v == keyword]:
+                    data.append(content[max(index-searchrange-1,0):min(index+searchrange,len(content))])
+            else:
+                data.append(content)
+    substring_counts = subsequence_counts(data, minLength=minLength, minCount=minCount)
+    result = {}
+    for el in substring_counts:
+        if keyword in el[0]:
+            result[" ".join(el[0])] = el[1]
+    return [(k, result[k]) for k in sorted(result, key=result.get, reverse=True)]
 
 
 #d_nyt = load_articles("/home/lmoldon/forschungspraktikum/nyt.json")
