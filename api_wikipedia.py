@@ -2,7 +2,6 @@ from datetime import date
 import time
 import datetime
 import requests
-import matplotlib.pyplot as plt
 
 def get_counts(title, start, end, language_edition="en"):
     timestamp_list = []
@@ -82,13 +81,7 @@ def get_creationdate(articlename):
         print(response.status_code, response.reason)
         return None
 
-def plot_counts(title, start, end, language_edition="en"):
-    x, y = get_counts(title,start,end)
-    if x != [] and y != []:
-        plt.figure(figsize=(10,10))
-        plt.plot(x,y)
-        plt.title("{} ({})".format(title, language_edition))
-        plt.show()
+
 
 
 # seasonality pattern
