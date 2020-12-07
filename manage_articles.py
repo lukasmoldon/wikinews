@@ -4,6 +4,8 @@ import datetime
 import random
 import regex
 import TextPreprocessing as txt
+from collections import Counter
+from itertools import combinations
 
 def load_articles(path_data):
     with open(path_data) as fp:
@@ -176,6 +178,17 @@ def get_cooccurrences(keyword, articles, start=None, end=None, useAbstract=True)
                         result[cooccurrence] += 1
     return [(k, result[k]) for k in sorted(result, key=result.get, reverse=True)]
 
+def subsequence_counts(sequences, minLength=2, minCount=2):
+    # source for following single line of code: https://codereview.stackexchange.com/questions/108052/finding-most-common-contiguous-sub-lists-in-an-array-of-lists
+    counts = Counter(seq[i:j] for seq in map(tuple, sequences) for i, j in combinations(range(len(seq) + 1), 2))
+    result = []
+    for el in counts:
+        if len(el) >= minLength and counts[el] > minCount:
+            result.append([el, counts[el]])
+    return result
+
+
+
 
 #d_nyt = load_articles("/home/lmoldon/forschungspraktikum/nyt.json")
 #d_theguardian = load_articles("/home/lmoldon/forschungspraktikum/theguardian.json")
@@ -197,3 +210,4 @@ def get_cooccurrences(keyword, articles, start=None, end=None, useAbstract=True)
 
 #nyt2019 = load_articles("C:/Users/lukas/Documents/GitHub/wikinews/nyt2019.json")
 #print(get_cooccurrences("trump", nyt2019))
+#print(restore_keyword("trump", nyt2019))
