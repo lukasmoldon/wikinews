@@ -144,6 +144,38 @@ def getCountPerWeek(words, word):
             weeks.append((w,0))
     return weeks
 
+def get_cooccurrences(keyword, articles, start=None, end=None, useAbstract=True):
+    result = {}
+    articles = get_articles_as_list(articles)
+    for a in articles:
+        match = True
+        if "abstract" in a and useAbstract:
+            content = txt.parseSentence(a["headline"] + " " + a["abstract"])
+        else:
+            content = txt.parseSentence(a["headline"])
+        if keyword not in content:
+            match = False
+        if match and (start != None or end != None):
+            timestamp = a["pub_date"]
+            if timestamp.count("Z") == 1:
+                date = datetime.datetime.strptime(timestamp, "%Y-%m-%dT%H:%M:%SZ").date() # theguardian timestamp format
+            else:
+                date = datetime.datetime.strptime(timestamp, "%Y-%m-%dT%H:%M:%S+%f").date() # nyt timestamp format
+            if start != None:
+                if date < start:
+                    match = False
+            if end != None:
+                if date > end:
+                    match = False
+        if match:
+            for cooccurrence in content:
+                if cooccurrence != keyword:
+                    if cooccurrence not in result:
+                        result[cooccurrence] = 1
+                    else:
+                        result[cooccurrence] += 1
+    return {k: v for k, v in sorted(result.items(), key=lambda item: item[1], reverse=True)}
+
 
 #d_nyt = load_articles("/home/lmoldon/forschungspraktikum/nyt.json")
 #d_theguardian = load_articles("/home/lmoldon/forschungspraktikum/theguardian.json")
@@ -162,3 +194,6 @@ def getCountPerWeek(words, word):
 #d_theguardian_ground_truth = generate_sample(filter_articles(d_theguardian, {"document_type": ["article"], "section_name": ["World news"]}), 200)
 #store_articles(d_nyt_ground_truth, "/home/lmoldon/forschungspraktikum/nyt_ground_truth.json")
 #store_articles(d_theguardian_ground_truth, "/home/lmoldon/forschungspraktikum/theguardian_ground_truth.json")
+
+#nyt2019 = load_articles("C:/Users/lukas/Documents/GitHub/wikinews/nyt2019.json")
+#print(get_cooccurrences("trump", nyt2019))
