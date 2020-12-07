@@ -174,7 +174,7 @@ def get_cooccurrences(keyword, articles, start=None, end=None, useAbstract=True)
                         result[cooccurrence] = 1
                     else:
                         result[cooccurrence] += 1
-    return {k: v for k, v in sorted(result.items(), key=lambda item: item[1], reverse=True)}
+    return [(k, result[k]) for k in sorted(result, key=result.get, reverse=True)]
 
 
 #d_nyt = load_articles("/home/lmoldon/forschungspraktikum/nyt.json")

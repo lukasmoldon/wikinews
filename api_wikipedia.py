@@ -112,4 +112,4 @@ def get_creationdate(articlename):
 #print(search_articles(["9/11", "attacks", "New", "York"]))
 #print(get_creationdate("September_11_attacks"))
 #print(get_creationdate("Aftermath_of_the_September_11_attacks"))
-print(search_articles(["9/11", "attacks", "New", "York"], date=date(2001,11,22))) # e.g. on 2001-11-22 9/11 was mentioned in the news, not all related articles created yet
+#print(search_articles(["9/11", "attacks", "New", "York"], date=date(2001,11,22))) # e.g. on 2001-11-22 9/11 was mentioned in the news, not all related articles created yet
