@@ -7,6 +7,14 @@ import manage_articles as mng
 
 
 def match(keyword, articles, restore_keyword=False, date=None, cooc_daterange=None, cooc_wordcount=2, nmax=1, timeout=10, useAbstract=True):
+    # only for single keywords!
+    # restore_keyword: specifies whether keyword neighbors should additionally be searched
+    # date: specifies when the keyword popped up in the news (None = search without this info)
+    # cooc_daterange: symmetric date range around "date" for searching co-occurring keywords (None = search in whole article data)
+    # cooc_wordcount: specifies how many most co-occurring keywords will be used for searchig related wiki articles
+    # nmax: specifies the maximum number of related wikipedia articles which should be returned
+    # timeout: specifies the maximum time in seconds for searching (exeeding the limit will result in returning the intermediate result)
+    # useAbstract: specifies whether the abstract should be included for searching co-occurring keywords (NYT only)
     if cooc_daterange == None:
         cooc = mng.get_cooccurrences(keyword, articles, useAbstract=useAbstract)
         if restore_keyword:
