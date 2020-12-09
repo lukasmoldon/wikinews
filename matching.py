@@ -1,7 +1,7 @@
 import logging
 import json
 import datetime
-from datetime import date, timedelta
+from datetime import timedelta
 import api_wikipedia as wiki
 import manage_articles as mng
 
@@ -35,7 +35,11 @@ def match(keyword, articles, restore_keyword=False, date=None, cooc_daterange=No
         query = keyword
         for el in cooc:
             query += " " + el[0]
-    matching = wiki.search_articles(query, nmax=nmax, date=date, timeout=timeout)
+    matching = {
+                "query": query,
+                "link": wiki.search_articles(query, nmax=nmax, date=date, timeout=timeout)
+    }
+
     return matching
 
 def groupmatch(keywords, articles, restore_keyword=False, dates=None, cooc_daterange=None, cooc_wordcount=2, nmax=1, timeout=10, useAbstract=True):
@@ -48,10 +52,12 @@ def groupmatch(keywords, articles, restore_keyword=False, dates=None, cooc_dater
                 skip = True
         if not skip:
             if cooc_daterange == None:
+                date = None
                 cooc = mng.get_cooccurrences(keyword, articles, useAbstract=useAbstract)
                 if restore_keyword:
                     restored = mng.restore_keyword(keyword, articles)[0][0]
             else:
+                date = dates[keywords.index(keyword)]
                 start = date - timedelta(days=cooc_daterange)
                 end = date + timedelta(days=cooc_daterange)
                 cooc = mng.get_cooccurrences(keyword, articles, start=start, end=end, useAbstract=useAbstract)
@@ -68,7 +74,10 @@ def groupmatch(keywords, articles, restore_keyword=False, dates=None, cooc_dater
                 for el in cooc:
                     query += " " + el[0]
             done.add(query)
-            matching[keyword] = wiki.search_articles(query, nmax=nmax, date=date, timeout=timeout)
+            matching[keyword] = {
+                "query": query, 
+                "link": wiki.search_articles(query, nmax=nmax, date=date, timeout=timeout)
+            }
     return matching
     
 
