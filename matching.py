@@ -57,6 +57,10 @@ def groupmatch(keywords, articles, dates=None, cooc_daterange=None, cooc_wordcou
     else:
         coocs = mng.get_group_cooccurrences(keywords, articles, useAbstract=useAbstract)
     for keyword in keywords:
+        if dates != None and cooc_daterange != None:
+            date = dates[keywords.index(keyword)]
+        else:
+            date = None
         matching[keyword] = {}
         cooc = coocs[keyword][:cooc_wordcount]
         query = keyword
