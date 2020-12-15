@@ -4,6 +4,7 @@ import datetime
 from datetime import timedelta
 import api_wikipedia as wiki
 import manage_articles as mng
+import time
 
 
 def match(keyword, articles, restore_keyword=False, date=None, cooc_daterange=None, cooc_wordcount=2, nmax=1, timeout=10, useAbstract=True):
@@ -66,6 +67,7 @@ def groupmatch(keywords, articles, dates=None, cooc_daterange=None, cooc_wordcou
         query = keyword
         for el in cooc:
             query += " " + el[0]
+        time.sleep(1)
         matching[keyword] = {
             "query": query, 
             "link": wiki.search_articles(query, nmax=nmax, date=date, timeout=timeout)
@@ -104,6 +106,7 @@ def groupmatch_old(keywords, articles, restore_keyword=False, dates=None, cooc_d
                 for el in cooc:
                     query += " " + el[0]
             done.add(query)
+            time.sleep(1)
             matching[keyword] = {
                 "query": query, 
                 "link": wiki.search_articles(query, nmax=nmax, date=date, timeout=timeout)
