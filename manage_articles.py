@@ -178,6 +178,43 @@ def get_cooccurrences(keyword, articles, start=None, end=None, useAbstract=True)
                         result[cooccurrence] += 1
     return [(k, result[k]) for k in sorted(result, key=result.get, reverse=True)]
 
+def get_group_cooccurrences(keywords, articles, starts=None, ends=None, useAbstract=True):
+    result = {}
+    for keyword in keywords:
+        result[keyword] = {}
+    articles = get_articles_as_list(articles)
+    for a in articles:
+        if "abstract" in a and useAbstract:
+            content = txt.parseSentence(a["headline"] + " " + a["abstract"])
+        else:
+            content = txt.parseSentence(a["headline"])
+        for keyword in keywords:
+            match = True
+            if keyword not in content:
+                match = False
+            if match and (starts != None or ends != None):
+                timestamp = a["pub_date"]
+                if timestamp.count("Z") == 1:
+                    date = datetime.datetime.strptime(timestamp, "%Y-%m-%dT%H:%M:%SZ").date() # theguardian timestamp format
+                else:
+                    date = datetime.datetime.strptime(timestamp, "%Y-%m-%dT%H:%M:%S+%f").date() # nyt timestamp format
+                if starts[keyword] != None:
+                    if date < starts[keyword]:
+                        match = False
+                if ends[keyword] != None:
+                    if date > ends[keyword]:
+                        match = False
+            if match:
+                for cooccurrence in content:
+                    if cooccurrence != keyword:
+                        if cooccurrence not in result[keyword]:
+                            result[keyword][cooccurrence] = 1
+                        else:
+                            result[keyword][cooccurrence] += 1
+    for keyword in keywords:
+        result[keyword] = [(k, result[keyword][k]) for k in sorted(result[keyword], key=result[keyword].get, reverse=True)]
+    return result
+
 def subsequence_counts(sequences, minLength=2, minCount=2):
     # source for following single line of code: https://codereview.stackexchange.com/questions/108052/finding-most-common-contiguous-sub-lists-in-an-array-of-lists
     counts = Counter(seq[i:j] for seq in map(tuple, sequences) for i, j in combinations(range(len(seq) + 1), 2))
