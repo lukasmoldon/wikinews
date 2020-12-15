@@ -42,7 +42,33 @@ def match(keyword, articles, restore_keyword=False, date=None, cooc_daterange=No
 
     return matching
 
-def groupmatch(keywords, articles, restore_keyword=False, dates=None, cooc_daterange=None, cooc_wordcount=2, nmax=1, timeout=10, useAbstract=True):
+def groupmatch(keywords, articles, dates=None, cooc_daterange=None, cooc_wordcount=2, nmax=1, timeout=10, useAbstract=True):
+    matching = {}
+    if dates != None and cooc_daterange != None:
+        starts = {}
+        ends = {}
+        for keyword in keywords:
+            date = dates[keywords.index(keyword)]
+            start = date - timedelta(days=cooc_daterange)
+            end = date + timedelta(days=cooc_daterange)
+            starts[keyword] = start
+            ends[keyword] = end
+        coocs = mng.get_group_cooccurrences(keywords, articles, starts, ends, useAbstract)
+    else:
+        coocs = mng.get_group_cooccurrences(keywords, articles, useAbstract=useAbstract)
+    for keyword in keywords:
+        matching[keyword] = {}
+        cooc = coocs[keyword][:cooc_wordcount]
+        query = keyword
+        for el in cooc:
+            query += " " + el[0]
+        matching[keyword] = {
+            "query": query, 
+            "link": wiki.search_articles(query, nmax=nmax, date=date, timeout=timeout)
+        }
+    return matching
+
+def groupmatch_old(keywords, articles, restore_keyword=False, dates=None, cooc_daterange=None, cooc_wordcount=2, nmax=1, timeout=10, useAbstract=True):
     matching = {}
     done = set()
     for keyword in keywords:
