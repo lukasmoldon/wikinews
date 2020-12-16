@@ -1,5 +1,6 @@
 import numpy as np
 import matplotlib.pyplot as plt
+from scipy import stats
 
 def getVariance(dataset):
     return np.var(dataset)
@@ -16,3 +17,6 @@ def findOutliers(dataset):
         if datapoint > upperLimit or datapoint < lowerLimit:
             outliers.append(datapoint)
     return outliers
+
+def getCorrelation(x,y):
+    return stats.pearsonr(x,y)

@@ -101,7 +101,7 @@ def getCalendarWeek(dat):
     
 def getYear(dat):
     match = regex.match(r"\d{4}-\d{2}-\d{2}", dat).group(0)
-    return datetime.datetime.strptime(match,'%Y-%m-%d').year
+    return datetime.datetime.strptime(match,'%Y-%m-%d').isocalendar()[0]
 
 def getWordCounts(articles,attribute='abstract'):
     #returns a dict of dicts with number of distinct words in each calendar week
