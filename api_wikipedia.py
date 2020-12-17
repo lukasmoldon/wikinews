@@ -4,6 +4,7 @@ import datetime
 import requests
 
 def get_counts(title, start, end, language_edition="en"):
+    time.sleep(1)
     timestamp_list = []
     viewcount_list = []
     url = "https://wikimedia.org/api/rest_v1/metrics/pageviews/per-article/{}.wikipedia/all-access/all-agents/{}/daily/{}/{}" # https://www.mediawiki.org/wiki/API:Etiquette
@@ -21,7 +22,7 @@ def get_counts(title, start, end, language_edition="en"):
             return [], []
     else:
         print(response.status_code, response.reason)
-        return []
+        return None
     return timestamp_list, viewcount_list
 
 def search_articles(keywords, nmax=10, date=None, timeout=10):
@@ -103,10 +104,6 @@ def get_creationdate(articlename):
 # Influence of complex / not trivial connections
 # -> "Stellar corona" is an aura of plasma that surrounds the sun (but has nothing to do with the coronavirus besides naming)
 # plot_counts("Stellar_corona", date(2015,7,1), date(2020,10,20))
-
-
-#plot_counts("Jussie_Smollett", date(2019,1,1), date(2019,12,31))
-
 
 #print(search_articles("9/11"))
 #print(search_articles(["9/11", "attacks", "New", "York"]))

@@ -1,5 +1,6 @@
 import matplotlib.pyplot as plt
 import api_wikipedia as wiki
+from datetime import date
 
 def plot_wikipedia(title, start, end, language_edition="en"):
     x, y = wiki.get_counts(title,start,end)
