@@ -2,3 +2,5 @@
 **/__pycache__/*
 wordCount2019.txt
 nyt2019.json
+.vscode
+.DS_Store

@@ -7,8 +7,33 @@ import logging
 import json
 
 def download_articles(api_key, path_results, start, end):
+    """
+    Downloads NYT article data.
+
+    Downloads the NYT article data between day ``start`` and day ``end`` and stores it at the given path ``path_results``.
+
+    Notes
+    -----
+    An ``api_key`` can be requested at https://developer.nytimes.com/get-started.
+
+    Parameters
+    ----------
+    api_key : str
+        API key for accessing the database of NYT.
+    path_results : str
+        Path on local machine where article dataset should be stored.
+    start : datetime.date
+        Only searching articles which have been published on or after this day.
+    end : datetime.date
+        Only searching articles which have been published on or before this day.
+
+    Returns
+    -------
+    None
+
+    """
     logging.basicConfig(format='%(asctime)s [%(levelname)s] - %(message)s', datefmt='%d-%m-%y %H:%M:%S', level=logging.INFO)
-    url = "https://api.nytimes.com/svc/archive/v1/{}/{}.json?api-key={}" # https://developer.nytimes.com/docs/archive-product/1/overview
+    url = "https://api.nytimes.com/svc/archive/v1/{}/{}.json?api-key={}" # see https://developer.nytimes.com/docs/archive-product/1/overview
     properties = ["headline", "pub_date", "web_url", "abstract", "lead_paragraph", "keywords", "document_type", "type_of_material", "word_count", "section_name"]
     data = {}
     cur_date = start
