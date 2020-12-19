@@ -1,4 +1,5 @@
 import logging
+import numpy as np
 import json
 import datetime
 import random
@@ -30,11 +31,7 @@ def filter_articles(articles, restrictions, start=None, end=None):
             for a in articles[y][m]:
                 accept = True
                 if start != None or end != None:
-                    timestamp = articles[y][m][a]["pub_date"]
-                    if timestamp.count("Z") == 1:
-                        date = datetime.datetime.strptime(timestamp, "%Y-%m-%dT%H:%M:%SZ").date() # theguardian timestamp format
-                    else:
-                        date = datetime.datetime.strptime(timestamp, "%Y-%m-%dT%H:%M:%S+%f").date() # nyt timestamp format
+                    date = parse_pubdate(articles[y][m][a]["pub_date"])
                     if start != None:
                         if date < start:
                             accept = False
@@ -73,7 +70,7 @@ def count_attributes(articles, attribute):
                     attributes[val] = 1
     return {k: v for k, v in sorted(attributes.items(), key=lambda item: item[1], reverse=True)}
 
-def generate_sample(articles, amount):
+def generate_subsample(articles, amount):
     result = {}
     while len(result) != amount:
         try:
@@ -158,11 +155,7 @@ def get_cooccurrences(keyword, articles, start=None, end=None, useAbstract=True)
         if keyword not in content:
             match = False
         if match and (start != None or end != None):
-            timestamp = a["pub_date"]
-            if timestamp.count("Z") == 1:
-                date = datetime.datetime.strptime(timestamp, "%Y-%m-%dT%H:%M:%SZ").date() # theguardian timestamp format
-            else:
-                date = datetime.datetime.strptime(timestamp, "%Y-%m-%dT%H:%M:%S+%f").date() # nyt timestamp format
+            date = parse_pubdate(a["pub_date"])
             if start != None:
                 if date < start:
                     match = False
@@ -193,11 +186,7 @@ def get_group_cooccurrences(keywords, articles, starts=None, ends=None, useAbstr
             if keyword not in content:
                 match = False
             if match and (starts != None or ends != None):
-                timestamp = a["pub_date"]
-                if timestamp.count("Z") == 1:
-                    date = datetime.datetime.strptime(timestamp, "%Y-%m-%dT%H:%M:%SZ").date() # theguardian timestamp format
-                else:
-                    date = datetime.datetime.strptime(timestamp, "%Y-%m-%dT%H:%M:%S+%f").date() # nyt timestamp format
+                date = parse_pubdate(a["pub_date"])
                 if starts[keyword] != None:
                     if date < starts[keyword]:
                         match = False
@@ -236,11 +225,7 @@ def restore_keyword(keyword, articles, start=None, end=None, searchrange=None, m
         if keyword not in content:
             match = False
         if match and (start != None or end != None):
-            timestamp = a["pub_date"]
-            if timestamp.count("Z") == 1:
-                date = datetime.datetime.strptime(timestamp, "%Y-%m-%dT%H:%M:%SZ").date() # theguardian timestamp format
-            else:
-                date = datetime.datetime.strptime(timestamp, "%Y-%m-%dT%H:%M:%S+%f").date() # nyt timestamp format
+            date = parse_pubdate(a["pub_date"])
             if start != None:
                 if date < start:
                     match = False
@@ -260,6 +245,14 @@ def restore_keyword(keyword, articles, start=None, end=None, searchrange=None, m
             result[" ".join(el[0])] = el[1]
     return [(k, result[k]) for k in sorted(result, key=result.get, reverse=True)]
 
+def parse_pubdate(timestamp):
+    if len(timestamp) == 10:
+        return datetime.datetime.strptime(timestamp, "%Y-%m-%d").date() # common day-only timestamp format
+    elif timestamp.count("Z") == 1:
+        return datetime.datetime.strptime(timestamp, "%Y-%m-%dT%H:%M:%SZ").date() # theguardian timestamp format
+    else:
+        return datetime.datetime.strptime(timestamp, "%Y-%m-%dT%H:%M:%S+%f").date() # nyt timestamp format
+
 
 #d_nyt = load_articles("/home/lmoldon/forschungspraktikum/nyt.json")
 #d_theguardian = load_articles("/home/lmoldon/forschungspraktikum/theguardian.json")
@@ -274,8 +267,8 @@ def restore_keyword(keyword, articles, start=None, end=None, searchrange=None, m
 #store_articles(d_nyt_reduced, "/home/lmoldon/forschungspraktikum/nyt_reduced.json")
 #store_articles(d_theguardian_reduced, "/home/lmoldon/forschungspraktikum/theguardian_reduced.json")
 
-#d_nyt_ground_truth = generate_sample(filter_articles(d_nyt, {"document_type": ["article"], "type_of_material": ["News"], "section_name": ["World"]}), 200)
-#d_theguardian_ground_truth = generate_sample(filter_articles(d_theguardian, {"document_type": ["article"], "section_name": ["World news"]}), 200)
+#d_nyt_ground_truth = generate_subsample(filter_articles(d_nyt, {"document_type": ["article"], "type_of_material": ["News"], "section_name": ["World"]}), 200)
+#d_theguardian_ground_truth = generate_subsample(filter_articles(d_theguardian, {"document_type": ["article"], "section_name": ["World news"]}), 200)
 #store_articles(d_nyt_ground_truth, "/home/lmoldon/forschungspraktikum/nyt_ground_truth.json")
 #store_articles(d_theguardian_ground_truth, "/home/lmoldon/forschungspraktikum/theguardian_ground_truth.json")
 
