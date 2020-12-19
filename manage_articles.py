@@ -253,6 +253,29 @@ def parse_pubdate(timestamp):
     else:
         return datetime.datetime.strptime(timestamp, "%Y-%m-%dT%H:%M:%S+%f").date() # nyt timestamp format
 
+def shuffle_publicationdates(articles):
+    distr = {}
+    n = 0
+    for y in articles.keys():
+        for m in articles[y].keys():
+            for a in articles[y][m]:
+                date = str(parse_pubdate(articles[y][m][a]["pub_date"]))
+                n += 1
+                if date not in distr:
+                    distr[date] = 1
+                else:
+                    distr[date] += 1
+    x = [] # list of dates
+    p = [] # probability = frequency of each date
+    for day in distr:
+        x.append(day)
+        p.append(distr[day]/n)
+    for y in articles.keys():
+        for m in articles[y].keys():
+            for a in articles[y][m]:
+                articles[y][m][a]["pub_date"] = np.random.choice(x,p=p)
+    return articles
+
 
 #d_nyt = load_articles("/home/lmoldon/forschungspraktikum/nyt.json")
 #d_theguardian = load_articles("/home/lmoldon/forschungspraktikum/theguardian.json")
