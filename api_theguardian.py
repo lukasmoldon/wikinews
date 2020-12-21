@@ -7,6 +7,31 @@ import logging
 import json
 
 def download_articles(api_key, path_results, start, end):
+    """
+    Downloads TheGuardian article data.
+
+    Downloads the TheGuardian article data between day ``start`` and day ``end`` and stores it at the given path ``path_results``.
+
+    Notes
+    -----
+    An ``api_key`` can be requested at https://open-platform.theguardian.com/access/.
+
+    Parameters
+    ----------
+    api_key : str
+        API key for accessing the database of TheGuardian.
+    path_results : str
+        Path on local machine where article dataset should be stored.
+    start : datetime.date
+        Only searching articles which have been published on or after this day.
+    end : datetime.date
+        Only searching articles which have been published on or before this day.
+
+    Returns
+    -------
+    None
+
+    """
     logging.basicConfig(format='%(asctime)s [%(levelname)s] - %(message)s', datefmt='%d-%m-%y %H:%M:%S', level=logging.DEBUG)
     url = "https://content.guardianapis.com/search?from-date={}&to-date={}&order-by=oldest&page-size=200&api-key={}&page=" # https://open-platform.theguardian.com/documentation/
     # translating properties to nyt format:  key = theguardian format, value = nyt format

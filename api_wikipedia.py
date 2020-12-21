@@ -4,6 +4,35 @@ import datetime
 import requests
 
 def get_counts(title, start, end, language_edition="en"):
+    """
+    Get the daily pageviews of an wikipedia article (uses wikipedia API).
+
+    Returns the daily pageviews of the wikipedia article ``title`` between day ``start`` and day ``end`` in the language ``language_edition``.
+
+    Notes
+    -----
+    1.) Do not make more than one api function call per second due to given request limits by wikipedia. 
+    2.) We only consider english wikipedia articles in our analysis.
+
+    Parameters
+    ----------
+    title : str
+        Title of the wikipedia article (https://en.wikipedia.org/wiki/``title``).
+    start : datetime.date
+        First day of pageview statistic.
+    end : datetime.date
+        Last day of pageview statistic.
+    language_edition : str
+        Selector for the language edition of wikipedia (default is ``en`` for english, see Notes).
+
+    Returns
+    -------
+    list of datetime.date
+        list of daily timestamps.
+    list of int
+        list of pageview counts for that day (same position as in first list).
+
+    """
     time.sleep(1)
     timestamp_list = []
     viewcount_list = []
@@ -26,6 +55,36 @@ def get_counts(title, start, end, language_edition="en"):
     return timestamp_list, viewcount_list
 
 def search_articles(keywords, nmax=10, date=None, timeout=10):
+    """
+    Get ranked search results of wikipedia articles for given keywords belonging to the same topic (uses wikipedia API).
+
+    Returns a ranked dict with ``nmax`` entries of wikipedia articles as search result for the query ``keywords``. If multiple keywords are
+    used, then all ``keywords`` should belong to the same topic.
+
+    Notes
+    -----
+    1.) Do not make more than one api function call per second due to given request limits by wikipedia. 
+    2.) This implementation is not deterministic, the API returns different results within hours.
+    3.) If optional parameter ``date`` gets used, only articles which already existed at ``date`` will be returned, which increases the runtime 
+    in certain circumstances significantly. Make sure to use the parameter ``timeout`` in this case, to limit the runtime for a single query.
+
+    Parameters
+    ----------
+    keywords : str or list of str
+        Keyword(s) for the query (argument for the search).
+    nmax : int
+        Maximum number of wikipedia articles which should be returned (can be less depending on number of found results).
+    date : datetime.date
+        Results are limited to articles which already existed at ``date`` (default is None, see Notes).
+    timeout : int
+        Limits the runtime for this query to ``timeout`` seconds. When exceeding the threshold, intermediate results will be returned.
+    
+    Returns
+    -------
+    dict
+        Results of the API search (key represents ranking: starting at 1 for best match, up to ``nmax``)
+
+    """
     start = datetime.datetime.now()
     url = "https://en.wikipedia.org/w/api.php"
     if type(keywords) == list:
@@ -61,12 +120,30 @@ def search_articles(keywords, nmax=10, date=None, timeout=10):
         return {}
     return ranking
 
-def get_creationdate(articlename):
+def get_creationdate(title):
+    """
+    Get the date of creation of a given wikipedia article.
+
+    Notes
+    -----
+    Do not make more than one api function call per second due to given request limits by wikipedia.
+    
+    Parameters
+    ----------
+    title : str
+        Title of the wikipedia article (https://en.wikipedia.org/wiki/``title``).
+    
+    Returns
+    -------
+    datetime.date
+        creation date of the article.
+        
+    """
     url = "https://en.wikipedia.org/w/api.php"
     params = {
         "action": "query",
         "prop": "revisions",
-        "titles": articlename,
+        "titles": title,
         "rvdir": "newer",
         "rvlimit": 1,
         "rvprop": "timestamp|user",
@@ -86,24 +163,6 @@ def get_creationdate(articlename):
         print(response.status_code, response.reason)
         return None
 
-
-
-
-# seasonality pattern
-# plot_counts("Santa_Claus", date(2015,7,1), date(2018,12,31))
-
-# random pattern
-# plot_counts("Berlin", date(2015,7,1), date(2018,12,31))
-
-# repetitive (but not seasonal) pattern
-# plot_counts("UEFA_European_Championship", date(2015,7,1), date(2018,12,31))
-
-# Influence of trigger events / historical incidents
-# plot_counts("Coronavirus", date(2015,7,1), date(2020,10,20))
-
-# Influence of complex / not trivial connections
-# -> "Stellar corona" is an aura of plasma that surrounds the sun (but has nothing to do with the coronavirus besides naming)
-# plot_counts("Stellar_corona", date(2015,7,1), date(2020,10,20))
 
 #print(search_articles("9/11"))
 #print(search_articles(["9/11", "attacks", "New", "York"]))
