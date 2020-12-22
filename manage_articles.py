@@ -86,7 +86,7 @@ def filter_articles(articles, restrictions={}, start=None, end=None):
     Parameters
     ----------
     articles : dict
-        Dict of articles in JSON format.
+        Dict of news articles in JSON format.
     restrictions : dict
         Dict of restrictions with format {attribute_name: [attribute values which pass the filter and remain in data]} 
         (default is empty dict for no restriction).
@@ -131,7 +131,7 @@ def get_attributes(articles, attribute):
     Parameters
     ----------
     articles : dict
-        Dict of articles in JSON format.
+        Dict of news articles in JSON format.
     attribute : str
         Selected attribute name (e.g. 'abstract').
 
@@ -155,7 +155,7 @@ def count_attributes(articles, attribute):
     Parameters
     ----------
     articles : dict
-        Dict of articles in JSON format.
+        Dict of news articles in JSON format.
     attribute : str
         Selected attribute name (e.g. 'pub_date').
 
@@ -183,7 +183,7 @@ def generate_subsample(articles, amount):
     Parameters
     ----------
     articles : dict
-        Dict of articles in JSON format.
+        Dict of news articles in JSON format.
     amount : int
         Size of the subset.
 
@@ -213,7 +213,7 @@ def get_articles_as_list(articles):
     Parameters
     ----------
     articles : dict
-        Dict of articles in JSON format.
+        Dict of news articles in JSON format.
 
     Returns
     -------
@@ -271,7 +271,7 @@ def getWordCounts(articles,attribute='abstract'):
     Parameters
     ----------
     articles : dict
-        Dict of articles in JSON format.
+        Dict of news articles in JSON format.
     attribute : str
         Name of the attribute (default is 'abstract').
 
@@ -380,7 +380,7 @@ def get_cooccurrences(keyword, articles, start=None, end=None, useAbstract=True)
     keyword : str
         Keyword in ``articles``.
     articles : dict
-        Dict of articles in JSON format.
+        Dict of news articles in JSON format.
     start : datetime.date
         Search is limited to articles which were published on or after this day (defaut is None).
     end : datetime.date
@@ -436,7 +436,7 @@ def get_group_cooccurrences(keywords, articles, starts=None, ends=None, useAbstr
     keywords : list
         List of keywords in ``articles``.
     articles : dict
-        Dict of articles in JSON format.
+        Dict of news articles in JSON format.
     starts : list of datetime.date
         Search is limited to articles which were published on or after this day depending on keyword (defaut is None).
     ends : list of datetime.date
@@ -513,7 +513,7 @@ def restore_keyword(keyword, articles, start=None, end=None, searchrange=None, m
     """
     Get subsequences of words which contain single ``keyword``.
 
-    Searches all subsequences of word which contain the ``keyword`` in headlines and abstracts for the given dataset of ``articles``.
+    Searches all subsequences of words which contain the ``keyword`` in headlines and abstracts for the given dataset of ``articles``.
 
     Notes
     -----
@@ -525,7 +525,7 @@ def restore_keyword(keyword, articles, start=None, end=None, searchrange=None, m
     keyword : str
         Keyword in ``articles``.
     articles : dict
-        Dict of articles in JSON format.
+        Dict of news articles in JSON format.
     start : datetime.date
         Search is limited to articles which were published on or after this day (defaut is None).
     end : datetime.date
@@ -610,7 +610,7 @@ def shuffle_publicationdates(articles):
     Parameters
     ----------
     articles : dict
-        Dict of articles in JSON format.
+        Dict of news articles in JSON format.
 
     Returns
     -------
