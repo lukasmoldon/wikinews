@@ -9,20 +9,98 @@ from collections import Counter
 from itertools import combinations
 
 def load_articles(path_data):
+    """
+    Loading article data.
+
+    Parameters
+    ----------
+    path_data : str
+        Path on local machine where article dataset is located.
+    
+    Returns
+    -------
+    dict
+        Dict of article data in JSON format.
+
+    """
     with open(path_data) as fp:
         articles = json.load(fp)
     return articles
 
 def store_articles(articles, path_data):
+    """
+    Storing article data.
+
+    Parameters
+    ----------
+    articles : dict
+        Dict of articles in JSON format which should be stored.
+    path_data : str
+        Path on local machine where article dataset should be stored.
+    
+    Returns
+    -------
+    None
+
+    """
     with open(path_data, "w") as fp:
         json.dump(articles, fp)
 
 def get_article(articles, year, month, count, article_property):
+    """
+    Get the property value of a single article in given article data.
+
+    Returns the value of the property ``article_property`` in the data ``articles`` with ID ``count`` which was published in ``month``/``year``. 
+
+    Parameters
+    ----------
+    articles : dict
+        Dict of articles in JSON format containing the target article.
+    year : int
+        Year of publication of target article.
+    month : int
+        Month of publication of target article.
+    count : int
+        ID of target article (each month starts with ID 1).
+    article_property : str
+        key name of the article property which should be returned.
+
+    Returns
+    -------
+    str
+        value of the property of the selected article.
+
+    """
     return articles[str(year)][str(month)][count][article_property]
 
-def filter_articles(articles, restrictions, start=None, end=None):
-    # resrictions:   {attribute_name: [values which pass the filter and remain in data]}
-    # start/end:     date(YEAR, MONTH, DAY) for searching articles between start and end
+def filter_articles(articles, restrictions={}, start=None, end=None):
+    """
+    Filter article data with given restrictions.
+
+    Returns the given article data with applied filter rules:
+    - only articles, which have for each attribute in ``restrictions`` (key of dict) a match with one the values in the 
+      corresponding list in ``restrictions`` (value of dict).
+    - only articles, which have been published between on or after day ``start``.
+    - only articles, which have been published between on or before day ``end``.
+
+    Parameters
+    ----------
+    articles : dict
+        Dict of articles in JSON format.
+    restrictions : dict
+        Dict of restrictions with format {attribute_name: [attribute values which pass the filter and remain in data]} 
+        (default is empty dict for no restriction).
+    start : datetime.date
+        First day of pageview statistic (default is None for no restriction).
+    end : datetime.date
+        Last day of pageview statistic (default is None for no restriction).
+
+    Returns
+    -------
+    dict
+        Dict of articles which passed the filter and fullfilled the restrictions.
+
+    """
     result = {}
     for y in articles.keys():
         result[y] = {}
@@ -47,8 +125,22 @@ def filter_articles(articles, restrictions, start=None, end=None):
     return result
 
 def get_attributes(articles, attribute):
-    # Input: articles from download_articles and an attribute like "abstract"
-    # Returns: list of all attributes of the given articles
+    """
+    Get all occuring values of a given ``attribute`` (no duplicates) in a given dataset of ``articles``.
+
+    Parameters
+    ----------
+    articles : dict
+        Dict of articles in JSON format.
+    attribute : str
+        Selected attribute name (e.g. 'abstract').
+
+    Returns
+    -------
+    set of str
+        Set of all values for the given attribute.
+
+    """
     attributes = set()
     for y in articles.keys():
         for m in articles[y].keys():
@@ -57,8 +149,22 @@ def get_attributes(articles, attribute):
     return attributes
 
 def count_attributes(articles, attribute):
-    # Input: articles from download_articles and an attribute like "abstract"
-    # Returns: counts all attributes of the given articles
+    """
+    Count all occuring values of a given ``attribute`` in a given dataset of ``articles``.
+
+    Parameters
+    ----------
+    articles : dict
+        Dict of articles in JSON format.
+    attribute : str
+        Selected attribute name (e.g. 'pub_date').
+
+    Returns
+    -------
+    dict
+        Dict of all attribute values (key of dict) with their frequency (value of dict).
+
+    """
     attributes = {}
     for y in articles.keys():
         for m in articles[y].keys():
@@ -71,6 +177,23 @@ def count_attributes(articles, attribute):
     return {k: v for k, v in sorted(attributes.items(), key=lambda item: item[1], reverse=True)}
 
 def generate_subsample(articles, amount):
+    """
+    Create a random subset of size ``amount`` of a given dataset of ``articles``.
+
+    Parameters
+    ----------
+    articles : dict
+        Dict of articles in JSON format.
+    amount : int
+        Size of the subset.
+
+    Returns
+    -------
+    dict
+        Subsample of article data (dict of articles). Article keys change to ``year``-``month``-``ID`` and an optional empty
+        entry for the ground truth label gets added (for labeling data, see README.md).
+
+    """
     result = {}
     while len(result) != amount:
         try:
@@ -84,7 +207,20 @@ def generate_subsample(articles, amount):
     return result
 
 def get_articles_as_list(articles):
-    #returns a flat list of all articles given as input
+    """
+    Get a 'flat' list of all ``articles``.
+
+    Parameters
+    ----------
+    articles : dict
+        Dict of articles in JSON format.
+
+    Returns
+    -------
+    list
+        List of articles (each article in dict format).
+
+    """
     result = []
     for y in articles.keys():
         for m in articles[y].keys():
@@ -93,15 +229,58 @@ def get_articles_as_list(articles):
     return result
 
 def getCalendarWeek(dat):
+    """
+    Get calendar week of timestamp.
+
+    Parameters
+    ----------
+    dat : str
+        Timestamp with NYT or TheGuardian format.
+
+    Returns
+    -------
+    int
+        Calendar week of timestamp.
+
+    """
     match = regex.match(r"\d{4}-\d{2}-\d{2}", dat).group(0)
     return datetime.datetime.strptime(match,'%Y-%m-%d').isocalendar()[1]
     
 def getYear(dat):
+    """
+    Get year of timestamp.
+
+    Parameters
+    ----------
+    dat : str
+        Timestamp with NYT or TheGuardian format.
+
+    Returns
+    -------
+    int
+        Year of timestamp.
+
+    """
     match = regex.match(r"\d{4}-\d{2}-\d{2}", dat).group(0)
     return datetime.datetime.strptime(match,'%Y-%m-%d').isocalendar()[0]
 
 def getWordCounts(articles,attribute='abstract'):
-    #returns a dict of dicts with number of distinct words in each calendar week
+    """
+    Get for each calendar week the word frequencies of all occuring words of a given ``attribute`` in the given dataset of ``articles``.
+
+    Parameters
+    ----------
+    articles : dict
+        Dict of articles in JSON format.
+    attribute : str
+        Name of the attribute (default is 'abstract').
+
+    Returns
+    -------
+    dict
+        Dict of dicts for each calendar week with word frequencies.
+
+    """
     result = {}
     articles = get_articles_as_list(articles)
     for a in articles:
@@ -116,8 +295,22 @@ def getWordCounts(articles,attribute='abstract'):
     return result
 
 def getTopWordsForWeek(words, n=10):
-    #words input is a dict returned by getWordCounts function
-    #n is the number of top n words returned for each calendar week
+    """
+    Get for each calendar week the ``n`` most frequent words in dict ``words``.
+
+    Parameters
+    ----------
+    words : dict
+        Dict of dicts for each calendar week with word frequencies (obtained from ``getWordCounts``).
+    n : int
+        Number of results per calendar week (top ``n`` descending).
+
+    Returns
+    -------
+    list
+        List of tupels with format: (week, {``n`` top words})
+
+    """
     result = []
     for k in words.keys():
         result.append((k,sorted(words[k].items(), key=lambda x:x[1],reverse=True)[:n]))
@@ -125,8 +318,20 @@ def getTopWordsForWeek(words, n=10):
     
 
 def getDistinctWords(words):
-    #words input is a dict returned by getWordCounts function
-    #returns a list containing all distinct words occuring in the dict
+    """
+    Get a 'flat' list of all distinct words in dict ``words``.
+
+    Parameters
+    ----------
+    words : dict
+        Dict of dicts for each calendar week with word frequencies (obtained from ``getWordCounts``).
+
+    Returns
+    -------
+    list
+        List of distinct words.
+
+    """
     result = []
     for k in words.keys():
         for w in words[k].items():
@@ -135,6 +340,22 @@ def getDistinctWords(words):
     return result
 
 def getCountPerWeek(words, word):
+    """
+    Get word frequency of ``word`` for each calendar week in ``words``.
+
+    Parameters
+    ----------
+    words : dict
+        Dict of dicts for each calendar week with word frequencies (obtained from ``getWordCounts``).
+    word : str
+        Selected word.
+
+    Returns
+    -------
+    list
+        List of tuples containing weekly word frequency with format: (week, count)
+
+    """
     weeks = []
     for w in words.keys():
         if word in words[w]:
@@ -144,6 +365,35 @@ def getCountPerWeek(words, word):
     return weeks
 
 def get_cooccurrences(keyword, articles, start=None, end=None, useAbstract=True):
+    """
+    Get co-occurring words for single ``keyword``.
+
+    Searches all words which occur together with ``keyword`` in headlines and abstracts for the given dataset of ``articles``.
+
+    Notes
+    -----
+    1.) For multiple different keywords use ``get_group_cooccurrences`` for better runtime.
+    2.) In contrast to ``restore_keyword``, here we do not consider the positional distance of a word to the keyword in the headline/abstract. 
+
+    Parameters
+    ----------
+    keyword : str
+        Keyword in ``articles``.
+    articles : dict
+        Dict of articles in JSON format.
+    start : datetime.date
+        Search is limited to articles which were published on or after this day (defaut is None).
+    end : datetime.date
+        Search is limited to articles which were published on or before this day (defaut is None).
+    useAbstract : bool
+        Specifies whether the abstract should also be used - only available for NYT (default is True).
+
+    Returns
+    -------
+    list
+        Sorted (descending count) list of tuples with format: (co-occurring_keyword, count)
+
+    """
     result = {}
     articles = get_articles_as_list(articles)
     for a in articles:
@@ -172,6 +422,34 @@ def get_cooccurrences(keyword, articles, start=None, end=None, useAbstract=True)
     return [(k, result[k]) for k in sorted(result, key=result.get, reverse=True)]
 
 def get_group_cooccurrences(keywords, articles, starts=None, ends=None, useAbstract=True):
+    """
+    Get co-occurring words for multiple ``keywords``.
+
+    Searches all words which occur together with words from ``keywords`` in headlines and abstracts for the given dataset of ``articles``.
+
+    Notes
+    -----
+    In contrast to ``restore_keyword``, here we do not consider the positional distance of a word to the keyword in the headline/abstract. 
+
+    Parameters
+    ----------
+    keywords : list
+        List of keywords in ``articles``.
+    articles : dict
+        Dict of articles in JSON format.
+    starts : list of datetime.date
+        Search is limited to articles which were published on or after this day depending on keyword (defaut is None).
+    ends : list of datetime.date
+        Search is limited to articles which were published on or before this day depending on keyword (defaut is None).
+    useAbstract : bool
+        Specifies whether the abstract should also be used - only available for NYT (default is True).
+
+    Returns
+    -------
+    dict
+        Dict containing for each keyword a sorted (descending count) list of tuples with format: (co-occurring_keyword, count)
+
+    """
     result = {}
     for keyword in keywords:
         result[keyword] = {}
@@ -205,6 +483,24 @@ def get_group_cooccurrences(keywords, articles, starts=None, ends=None, useAbstr
     return result
 
 def subsequence_counts(sequences, minLength=2, minCount=2):
+    """
+    Count all word-subsequences of ``sequences`` consisting of at least ``minLength`` words and occurring at least ``minCount`` times.
+
+    Parameters
+    ----------
+    sequences : list
+        List of lists, which represents lists of sentences (each element of a sentence-list is a word).
+    minLength : int
+        Minimum length (number of words) of the subsequence (defaut is 2).
+    minCount : int
+        Minimum amount of occurrences of the subsequence (defaut is 5).
+
+    Returns
+    -------
+    list
+        List of tupels with format: (subsequence, count)
+
+    """
     # source for following single line of code: https://codereview.stackexchange.com/questions/108052/finding-most-common-contiguous-sub-lists-in-an-array-of-lists
     counts = Counter(seq[i:j] for seq in map(tuple, sequences) for i, j in combinations(range(len(seq) + 1), 2))
     result = []
@@ -214,6 +510,41 @@ def subsequence_counts(sequences, minLength=2, minCount=2):
     return result
 
 def restore_keyword(keyword, articles, start=None, end=None, searchrange=None, minLength=2, minCount=5, useAbstract=True):
+    """
+    Get subsequences of words which contain single ``keyword``.
+
+    Searches all subsequences of word which contain the ``keyword`` in headlines and abstracts for the given dataset of ``articles``.
+
+    Notes
+    -----
+    1.) In contrast to ``get_cooccurrences``, here we consider the positional distance of a word to the keyword in the headline/abstract.
+    2.) Using ``searchrange`` increases the performance.
+
+    Parameters
+    ----------
+    keyword : str
+        Keyword in ``articles``.
+    articles : dict
+        Dict of articles in JSON format.
+    start : datetime.date
+        Search is limited to articles which were published on or after this day (defaut is None).
+    end : datetime.date
+        Search is limited to articles which were published on or before this day (defaut is None).
+    searchrange : int
+        Only consider words within this maximum (symmetric) positional distance to the keyword in the headline/abstract (defaut is None).
+    minLength : int
+        Minimum length (number of words) of the subsequence (defaut is 2).
+    minCount : int
+        Minimum amount of occurrences of the subsequence (defaut is 5).
+    useAbstract : bool
+        Specifies whether the abstract should also be used - only available for NYT (default is True).
+
+    Returns
+    -------
+    list
+        Sorted (descending count) list of tuples with format: (word_sequence, count)
+
+    """
     data = []
     articles = get_articles_as_list(articles)
     for a in articles:
@@ -246,6 +577,20 @@ def restore_keyword(keyword, articles, start=None, end=None, searchrange=None, m
     return [(k, result[k]) for k in sorted(result, key=result.get, reverse=True)]
 
 def parse_pubdate(timestamp):
+    """
+    Convert a timestamp (string) of NYT/TheGuardian/common format to date object.
+
+    Parameters
+    ----------
+    timestamp : str
+        Timestamp to be converted.
+
+    Returns
+    -------
+    datetime.date
+        Resulting date object.
+
+    """
     if len(timestamp) == 10:
         return datetime.datetime.strptime(timestamp, "%Y-%m-%d").date() # common day-only timestamp format
     elif timestamp.count("Z") == 1:
@@ -254,6 +599,25 @@ def parse_pubdate(timestamp):
         return datetime.datetime.strptime(timestamp, "%Y-%m-%dT%H:%M:%S+%f").date() # nyt timestamp format
 
 def shuffle_publicationdates(articles):
+    """
+    Get a copy of the articles with shuffled publication dates.
+
+    Notes
+    -----
+    The function computes the distribution of publication dates in the given data and 
+    then randomly draws a publication date for each article from the distribution.
+
+    Parameters
+    ----------
+    articles : dict
+        Dict of articles in JSON format.
+
+    Returns
+    -------
+    dict
+        Same dict of articles, but with shuffled publication dates.
+
+    """
     distr = {}
     n = 0
     for y in articles.keys():

@@ -12,7 +12,8 @@ def get_counts(title, start, end, language_edition="en"):
     Notes
     -----
     1.) Do not make more than one api function call per second due to given request limits by wikipedia. 
-    2.) We only consider english wikipedia articles in our analysis.
+    2.) If the function returns an empty list (but the article exists online), then most likely the article was created after day ``end```.  
+    3.) We only consider english wikipedia articles in our analysis.
 
     Parameters
     ----------
