@@ -10,7 +10,7 @@ def plot_wikipedia(title, start, end, language_edition="en"):
 
     Notes
     -----
-    We only consider english wikipedia articles in our analysis.
+    We only consider English wikipedia articles in our analysis.
 
     Parameters
     ----------
@@ -21,7 +21,7 @@ def plot_wikipedia(title, start, end, language_edition="en"):
     end : datetime.date
         Last day of plot.
     language_edition : str
-        Selector for the language edition of wikipedia (default is ``en`` for english, see Notes).
+        Selector for the language edition of wikipedia (default is ``en`` for English, see Notes).
     
     Returns
     -------
