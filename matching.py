@@ -8,14 +8,48 @@ import time
 
 
 def match(keyword, articles, restore_keyword=False, date=None, cooc_daterange=None, cooc_wordcount=2, nmax=1, timeout=10, useAbstract=True):
-    # only for single keywords!
-    # restore_keyword: specifies whether keyword neighbors should additionally be searched
-    # date: specifies when the keyword popped up in the news (None = search without this info)
-    # cooc_daterange: symmetric date range around "date" for searching co-occurring keywords (None = search in whole article data)
-    # cooc_wordcount: specifies how many most co-occurring keywords will be used for searchig related wiki articles
-    # nmax: specifies the maximum number of related wikipedia articles which should be returned
-    # timeout: specifies the maximum time in seconds for searching (exeeding the limit will result in returning the intermediate result)
-    # useAbstract: specifies whether the abstract should be included for searching co-occurring keywords (NYT only)
+    """
+    Match single keywords from the news with wikipedia articles using advanced methods.
+
+    This matching alogrithm uses keyword co-occurrences which occur together with ``keyword`` in headlines and abstracts for the given dataset of ``articles``.
+    Optionally it also searches all subsequences of words which contain the ``keyword``. Then it computes a final query from this information at sends it to the API.
+
+    Notes
+    -----
+    1.) Do not make more than one api function call per second due to given request limits by wikipedia. 
+    2.) For matching multiple keywords, use the function ``groupmatch`` instead for better performance over time.
+    3.) This implementation is not deterministic, the wikipedia API returns different results within hours.
+    4.) If optional parameter ``date`` gets used, only articles which already existed at ``date`` will be returned, which increases the runtime 
+    in certain circumstances significantly. Make sure to use the parameter ``timeout`` in this case, to limit the runtime for a single query.
+    5.) Using ``restore_keyword`` decreases performance significantly, but does not seem to improve the quality noticeably.
+
+    Parameters
+    ----------
+    keyword : str
+        Keyword in ``articles``.
+    articles : dict
+        Dict of news articles in JSON format.
+    restore_keyword : bool
+        Specifies whether keyword neighbors should additionally be searched (default is False, see ``restore_keyword`` function).
+    date : datetime.date
+        Results are limited to articles which already existed at ``date`` (default is None, see Notes).
+    cooc_daterange : int
+        Symmetric date range around ``date`` for searching co-occurring keywords (default is None: search in whole article data).
+    cooc_wordcount : int
+        Specifies how many most co-occurring keywords will be used for searchig related wiki articles (default is 2).
+    nmax : int
+        Specifies the maximum number of related wikipedia articles which should be returned (default is 1: only return best match).
+    timeout : int
+        Limits the runtime for this query to ``timeout`` seconds. When exceeding the threshold, intermediate results will be returned (default is 10).
+    useAbstract : bool
+        Specifies whether the abstract should also be used - only available for NYT (default is True).
+
+    Returns
+    -------
+    dict
+        Dict containing the computed advanced query for the API and the corresponding result. 
+
+    """
     if cooc_daterange == None:
         cooc = mng.get_cooccurrences(keyword, articles, useAbstract=useAbstract)
         if restore_keyword:
@@ -44,6 +78,43 @@ def match(keyword, articles, restore_keyword=False, date=None, cooc_daterange=No
     return matching
 
 def groupmatch(keywords, articles, dates=None, cooc_daterange=None, cooc_wordcount=2, nmax=1, timeout=10, useAbstract=True):
+    """
+    Match multiple different keywords from the news with wikipedia articles using advanced methods.
+
+    This matching alogrithm uses keyword co-occurrences which occur together with ``keyword`` in headlines and abstracts for the given dataset of ``articles``.
+    Then it computes a final query from this information at sends it to the API.
+
+    Notes
+    -----
+    1.) This implementation is not deterministic, the wikipedia API returns different results within hours.
+    2.) If optional parameter ``dates`` gets used, only articles which already existed at ``dates`` will be returned, which increases the runtime 
+    in certain circumstances significantly. Make sure to use the parameter ``timeout`` in this case, to limit the runtime for a single query.
+
+    Parameters
+    ----------
+    keywords : list of str
+        List of keywords in ``articles``.
+    articles : dict
+        Dict of news articles in JSON format.
+    dates : list of datetime.date
+        Results are limited to articles which already existed at correspnding value of ``dates`` (default is None, see Notes).
+    cooc_daterange : int
+        Symmetric date range around ``date`` for searching co-occurring keywords (default is None: search in whole article data).
+    cooc_wordcount : int
+        Specifies how many most co-occurring keywords will be used for searchig related wiki articles (default is 2).
+    nmax : int
+        Specifies the maximum number of related wikipedia articles which should be returned (default is 1: only return best match).
+    timeout : int
+        Limits the runtime for this query to ``timeout`` seconds. When exceeding the threshold, intermediate results will be returned (default is 10).
+    useAbstract : bool
+        Specifies whether the abstract should also be used - only available for NYT (default is True).
+
+    Returns
+    -------
+    dict
+        Dict containing for each keyword the computed advanced query for the API and the corresponding result. 
+
+    """
     matching = {}
     if dates != None and cooc_daterange != None:
         starts = {}
@@ -75,6 +146,47 @@ def groupmatch(keywords, articles, dates=None, cooc_daterange=None, cooc_wordcou
     return matching
 
 def groupmatch_old(keywords, articles, restore_keyword=False, dates=None, cooc_daterange=None, cooc_wordcount=2, nmax=1, timeout=10, useAbstract=True):
+    """
+    Match multiple different keywords from the news with wikipedia articles using advanced methods.
+
+    This matching alogrithm uses keyword co-occurrences which occur together with ``keyword`` in headlines and abstracts for the given dataset of ``articles``.
+    Optionally it also searches all subsequences of words which contain the ``keyword``. Then it computes a final query from this information at sends it to the API.
+
+    Notes
+    -----
+    1.) THIS IS AN OUTDATED VERSION WITH QUADRATIC RUNTIME COMPLEXITY TO RECORD THE DEVELOPMENT PROCESS, USE ``GROUPMATCH`` INSTEAD.
+    2.) This implementation is not deterministic, the wikipedia API returns different results within hours.
+    3.) If optional parameter ``dates`` gets used, only articles which already existed at ``dates`` will be returned, which increases the runtime 
+    in certain circumstances significantly. Make sure to use the parameter ``timeout`` in this case, to limit the runtime for a single query.
+    4.) Using ``restore_keyword`` decreases performance significantly, but does not seem to improve the quality noticeably.
+
+    Parameters
+    ----------
+    keywords : list of str
+        List of keywords in ``articles``.
+    articles : dict
+        Dict of news articles in JSON format.
+    restore_keyword : bool
+        Specifies whether keyword neighbors should additionally be searched (default is False, see ``restore_keyword`` function).
+    dates : list of datetime.date
+        Results are limited to articles which already existed at correspnding value of ``dates`` (default is None, see Notes).
+    cooc_daterange : int
+        Symmetric date range around ``date`` for searching co-occurring keywords (default is None: search in whole article data).
+    cooc_wordcount : int
+        Specifies how many most co-occurring keywords will be used for searchig related wiki articles (default is 2).
+    nmax : int
+        Specifies the maximum number of related wikipedia articles which should be returned (default is 1: only return best match).
+    timeout : int
+        Limits the runtime for this query to ``timeout`` seconds. When exceeding the threshold, intermediate results will be returned (default is 10).
+    useAbstract : bool
+        Specifies whether the abstract should also be used - only available for NYT (default is True).
+
+    Returns
+    -------
+    dict
+        Dict containing for each keyword the computed advanced query for the API and the corresponding result. 
+
+    """
     matching = {}
     done = set()
     for keyword in keywords:
