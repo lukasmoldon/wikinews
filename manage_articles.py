@@ -718,6 +718,40 @@ def get_keyword_changerate(articles, useAbstract=True):
                     changerate[week][keyword] = [counts[week][keyword], counts[week][keyword]/counts[previousweek][keyword]]
     return changerate
 
+def filter_interestingness(articles, min_weektotal=5, min_changerate=2, useAbstract=True):
+    """
+    Get all keywords which occured at least ``min_weektotal`` in any week with a minimum changerate of ``min_changerate``.
+
+    Parameters
+    ----------
+    articles : dict
+        Dict of news articles in JSON format.
+    min_weektotal : int
+        Specifies the minimum total count within a week to be counted (default is 5).
+    min_changerate : int
+        Specifies the minimum changerate within a week compared to the previous week to be counted (default is 2).
+    useAbstract : bool
+        Specifies whether the abstract should also be used - only available for NYT (default is True).
+
+    Returns
+    -------
+    dict
+        Dict of keywords, contains all calendar weeks where restrictions are fulfilled with corresponding weekly total count [0] and changerate [1] (compared to previous week).
+
+    """
+    changerate = get_keyword_changerate(articles, useAbstract=useAbstract)
+    result = {}
+    for week in changerate:
+        for keyword in changerate[week]:
+            if changerate[week][keyword][0] >= min_weektotal and changerate[week][keyword][1] >= min_changerate:
+                if keyword in result:
+                    result[keyword][week] = changerate[week][keyword]
+                else:
+                    result[keyword] = {}
+                    result[keyword][week] = changerate[week][keyword]
+    return result
+
+
 #d_nyt = load_articles("/home/lmoldon/forschungspraktikum/nyt.json")
 #d_theguardian = load_articles("/home/lmoldon/forschungspraktikum/theguardian.json")
 
@@ -739,3 +773,5 @@ def get_keyword_changerate(articles, useAbstract=True):
 #nyt2019 = load_articles("C:/Users/lukas/Documents/GitHub/wikinews/nyt2019.json")
 #print(get_cooccurrences("trump", nyt2019))
 #print(restore_keyword("trump", nyt2019))
+
+#print(filter_interestingness(nyt2019))
