@@ -722,6 +722,10 @@ def filter_interestingness(articles, min_weektotal=5, min_changerate=2, useAbstr
     """
     Get all keywords which occured at least ``min_weektotal`` in any week with a minimum changerate of ``min_changerate``.
 
+    Notes
+    -----
+    Returned dict is sorted descending by the max changerate of each keyword.
+
     Parameters
     ----------
     articles : dict
@@ -741,15 +745,27 @@ def filter_interestingness(articles, min_weektotal=5, min_changerate=2, useAbstr
     """
     changerate = get_keyword_changerate(articles, useAbstract=useAbstract)
     result = {}
+    rates = [] # only for sorting
+    # filter:
     for week in changerate:
         for keyword in changerate[week]:
             if changerate[week][keyword][0] >= min_weektotal and changerate[week][keyword][1] >= min_changerate:
-                if keyword in result:
-                    result[keyword][week] = changerate[week][keyword]
-                else:
+                if keyword not in result:
                     result[keyword] = {}
-                    result[keyword][week] = changerate[week][keyword]
-    return result
+                result[keyword][week] = changerate[week][keyword]
+                rates.append(changerate[week][keyword][1])
+    # sort:
+    rates = list(sorted(set(rates), reverse=True))
+    result_sorted = {}
+    for rate in rates:
+        for keyword in result:
+            if keyword not in result_sorted:
+                maxrate = 0
+                for week in result[keyword]:
+                    maxrate = max(maxrate,result[keyword][week][1])
+                if maxrate == rate:
+                    result_sorted[keyword] = result[keyword]
+    return result_sorted
 
 
 #d_nyt = load_articles("/home/lmoldon/forschungspraktikum/nyt.json")
@@ -774,4 +790,4 @@ def filter_interestingness(articles, min_weektotal=5, min_changerate=2, useAbstr
 #print(get_cooccurrences("trump", nyt2019))
 #print(restore_keyword("trump", nyt2019))
 
-#print(filter_interestingness(nyt2019))
+#print(filter_interestingness(nyt2019, 10, 5))
