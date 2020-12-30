@@ -647,6 +647,17 @@ def shuffle_publicationdates(articles):
                 articles[y][m][a]["pub_date"] = np.random.choice(x,p=p)
     return articles
 
+def get_keywords(articles, useAbstract=True):
+    keywords = set()
+    articles = get_articles_as_list(articles)
+    for a in articles:
+        for keyword in a["headline"]:
+            keywords.add(keyword)
+        if useAbstract and "abstract" in a:
+            for keyword in a["abstract"]:
+                keywords.add(keyword)
+    return keywords
+
 
 #d_nyt = load_articles("/home/lmoldon/forschungspraktikum/nyt.json")
 #d_theguardian = load_articles("/home/lmoldon/forschungspraktikum/theguardian.json")
