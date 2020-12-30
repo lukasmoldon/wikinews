@@ -648,6 +648,22 @@ def shuffle_publicationdates(articles):
     return articles
 
 def get_keywords(articles, useAbstract=True):
+    """
+    Get a set of all keywords which occur in the headlines (and optionally also abstracts) in ``articles``.
+
+    Parameters
+    ----------
+    articles : dict
+        Dict of news articles in JSON format.
+    useAbstract : bool
+        Specifies whether the abstract should also be used - only available for NYT (default is True).
+
+    Returns
+    -------
+    set
+        Set of keywords.
+
+    """
     keywords = set()
     articles = get_articles_as_list(articles)
     for a in articles:
@@ -658,6 +674,49 @@ def get_keywords(articles, useAbstract=True):
                 keywords.add(keyword)
     return keywords
 
+def get_keyword_changerate(articles, useAbstract=True):
+    """
+    Compute weekly changerates of keyword frequencies in ``articles``.
+
+    Notes
+    -----
+    If a keyword occurs in a specific week but not in the week before, the changerate is set to ``float('inf')``.
+
+    Parameters
+    ----------
+    articles : dict
+        Dict of news articles in JSON format.
+    useAbstract : bool
+        Specifies whether the abstract should also be used - only available for NYT (default is True).
+
+    Returns
+    -------
+    dict
+        Dict of calendar weeks, contains all keywords as dict with their weekly total count [0] and changerate [1] (compared to previous week).
+
+    """
+    counts = getWordCounts(articles, useAbstract=useAbstract)
+    keywords = get_keywords(articles, useAbstract=useAbstract)
+    changerate = {}
+    for week in counts:
+        changerate[week] = {}
+        for keyword in keywords:
+            changerate[week][keyword] = [0, 0] # = [total, changerate from previous week]
+    for week in counts:
+        previousweek = None
+        if (week[0], week[1]-1) in counts:
+            previousweek = (week[0], week[1]-1)
+        elif (week[0]-1, 52) in counts:
+            previousweek = (week[0]-1, 52)
+        elif (week[0]-1, 53) in counts:
+            previousweek = (week[0]-1, 53)
+        if previousweek != None:
+            for keyword in counts[week]:
+                if keyword not in counts[previousweek]:
+                    changerate[week][keyword] = [counts[week][keyword], float('inf')]
+                else:
+                    changerate[week][keyword] = [counts[week][keyword], counts[week][keyword]/counts[previousweek][keyword]]
+    return changerate
 
 #d_nyt = load_articles("/home/lmoldon/forschungspraktikum/nyt.json")
 #d_theguardian = load_articles("/home/lmoldon/forschungspraktikum/theguardian.json")
