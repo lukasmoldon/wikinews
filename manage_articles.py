@@ -264,16 +264,17 @@ def getYear(dat):
     match = regex.match(r"\d{4}-\d{2}-\d{2}", dat).group(0)
     return datetime.datetime.strptime(match,'%Y-%m-%d').isocalendar()[0]
 
-def getWordCounts(articles,attribute='abstract'):
+def getWordCounts(articles, useAbstract=True):
     """
-    Get for each calendar week the word frequencies of all occuring words of a given ``attribute`` in the given dataset of ``articles``.
+    Get for each calendar week the word frequencies of all occuring words in the headlines 
+    (and optionally also abstracts) in the given dataset of ``articles``.
 
     Parameters
     ----------
     articles : dict
         Dict of news articles in JSON format.
-    attribute : str
-        Name of the attribute (default is 'abstract').
+    useAbstract : bool
+        Specifies whether the abstract should also be used - only available for NYT (default is True).
 
     Returns
     -------
@@ -292,6 +293,12 @@ def getWordCounts(articles,attribute='abstract'):
                 result[key][w] = 1
             else: 
                 result[key][w] += 1 
+        if useAbstract and "abstract" in a:
+            for w in txt.parseSentence(a['abstract']):
+                if w not in result[key]:
+                    result[key][w] = 1
+                else: 
+                    result[key][w] += 1 
     return result
 
 def getTopWordsForWeek(words, n=10):
