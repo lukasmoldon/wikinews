@@ -7,6 +7,7 @@ import regex
 import TextPreprocessing as txt
 from collections import Counter
 from itertools import combinations
+import copy
 
 def load_articles(path_data):
     """
@@ -625,6 +626,7 @@ def shuffle_publicationdates(articles):
         Same dict of articles, but with shuffled publication dates.
 
     """
+    articles = copy.deepcopy(articles)
     distr = {}
     n = 0
     for y in articles.keys():
@@ -786,7 +788,7 @@ def filter_interestingness(articles, min_weektotal=5, min_changerate=2, useAbstr
 #store_articles(d_nyt_ground_truth, "/home/lmoldon/forschungspraktikum/nyt_ground_truth.json")
 #store_articles(d_theguardian_ground_truth, "/home/lmoldon/forschungspraktikum/theguardian_ground_truth.json")
 
-#nyt2019 = load_articles("C:/Users/lukas/Documents/GitHub/wikinews/nyt2019.json")
+#nyt2019 = load_articles("nyt2019.json")
 #print(get_cooccurrences("trump", nyt2019))
 #print(restore_keyword("trump", nyt2019))
 
