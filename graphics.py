@@ -1,6 +1,10 @@
 import matplotlib.pyplot as plt
 import api_wikipedia as wiki
 from datetime import date
+import matplotlib.backends.backend_pdf
+import matplotlib.pylab as pl
+import matplotlib.gridspec as gridspec
+import statistics
 
 def plot_wikipedia(title, start, end, language_edition="en"):
     """
@@ -53,14 +57,45 @@ def plot_dataset(word,dataset,timepoints):
     None
 
     """
-    print(timepoints)
     if timepoints != [] and dataset != []:
         plt.figure(figsize=(10,10))
         plt.plot(timepoints,dataset)
         plt.title(word)
         plt.show()
 
+def createPDFwithBothPlots(word):
+    """
+    Creates a png file with articles and wikipedia plot and their correlation. Output will be saved in correlation subfolder
 
+    Parameters
+    ----------
+    word : word object
+    
+    Returns
+    -------
+    None
+
+    """
+    fig = plt.figure()
+    fig.subplots_adjust(hspace=0.4, wspace=0.4)
+    
+    axis1 = fig.add_subplot(211)
+    plt.plot(word.ts_articles.getDates(),word.ts_articles.getCounts())
+    plt.title(word.keyword)
+    
+    axis2 = fig.add_subplot(212)
+    x, y = wiki.get_counts(word.wikipediaSite,word.ts_articles.getDates()[0],word.ts_articles.getDates()[-1], language_edition="en")
+    if x != [] and y != []:
+        plt.plot(x,y)
+        plt.title("{} ({})".format(word.keyword, "en"))
+        axis2.set_xlabel("Correlation: " + str(statistics.getCorrelation(word.ts_articles.getCounts(),word.ts_wiki.getCounts())))
+        plt.show()
+    
+    plt.tight_layout(pad=2, w_pad=2, h_pad=2)
+    fig.savefig('./correlation/' + word.keyword + '.png')
+    
+
+    
 # seasonality pattern
 # plot_wikipedia("Santa_Claus", date(2015,7,1), date(2018,12,31))
 
