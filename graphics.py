@@ -92,7 +92,7 @@ def createPDFwithBothPlots(word):
         plt.show()
     
     plt.tight_layout(pad=2, w_pad=2, h_pad=2)
-    fig.savefig('./correlation/' + word.keyword + '.png')
+    fig.savefig('./correlation_shuffled/' + word.keyword + '.png')
     
 
     

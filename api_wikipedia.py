@@ -51,7 +51,7 @@ def get_counts(title, start, end, language_edition="en"):
         except KeyError:
             return [], []
     else:
-        print(response.status_code, response.reason)
+        #print(response.status_code, response.reason)
         return None
     return timestamp_list, viewcount_list
 
