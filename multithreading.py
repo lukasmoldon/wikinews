@@ -19,12 +19,15 @@ from copy import deepcopy
 import logging
 import concurrent.futures
 
+log_starttime = datetime.datetime.now()
+logging.basicConfig(format='%(asctime)s [%(levelname)s] - %(message)s', datefmt='%d-%m-%y %H:%M:%S', level=logging.INFO)
+
 results_random = []
 result_original = None
 articles_original = None
 
 def single_run(pid):
-    logging.info("Starting PID ".format(pid))
+    logging.info("Starting PID {}".format(pid))
     global articles_original
     if pid == 0:
         # compute correlation of original data
@@ -82,7 +85,7 @@ def single_run(pid):
     else:
         global results_random
         results_random.append(numpy.mean(corr))
-    logging.info("Finished PID ".format(pid))
+    logging.info("Finished PID {}".format(pid))
 
 def run(n, max_workers=72):
     logging.info("Loading initial data ...")
@@ -105,3 +108,7 @@ def run(n, max_workers=72):
 
 
 run(1000)
+
+log_endtime = datetime.datetime.now()
+log_runtime = (log_endtime - log_starttime)
+logging.info("Total runtime: " + str(log_runtime))
