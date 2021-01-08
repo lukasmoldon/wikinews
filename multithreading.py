@@ -30,7 +30,56 @@ def single_run(pid):
     else:
         # create random sample and compute correlation
         articles = mng.shuffle_publicationdates(articles_original)
-    
+    #Get a dict of dicts for each calendar week with word frequencies from getWordCounts
+    wordCounts = mng.getWordCounts(articles)
+    #List of distinct words 
+    distinctWords = mng.getDistinctWords(wordCounts)
+    #List of lists of tuples containing weekly word frequency
+    countsPerWeek = []
+    for w in distinctWords:
+        countsPerWeek.append((w,mng.getCountPerWeek(wordCounts,w)))
+    #Create list of word objects for each keyword
+    words = []
+    for c in countsPerWeek:
+        words.append(word.Word(c[0],ts_articles=timeseries.Timeseries(c[1])))
+    interestingWords = mng.filter_interestingness(articles, 10, 5)
+    keywords = []
+    for k in interestingWords:
+        keywords.append(k)
+    m = matching.groupmatch(keywords, articles)
+    for key in m.keys():
+        #Following line from 
+        #https://stackoverflow.com/questions/7125467/find-object-in-list-that-has-attribute-equal-to-some-value-that-meets-any-condi
+        try:
+            word = next((x for x in words if x.keyword == key), None)
+            query = m[key]['query']
+            page = m[key]['link'][1]
+            wiki_counts = wiki.get_counts(page, word.ts_articles.getStartDate(), word.ts_articles.getEndDate(),"en")
+            if wiki_counts is not None:
+                #If wikipedia timeseries exists
+                word.coocKeywords = query
+                word.wikipediaSite = page
+                word.ts_wiki = timeseries.parseWikipediaCounts(wiki_counts)
+        except:
+            print("ERROR: Key is invalid")
+    words_analyze = [x for x in words if x.wikipediaSite != ""]
+    #Drop all timepoints which are not contained in both article and wikipedia timeseries
+    corr = []
+    for w in words_analyze:
+        w_timepointsordered = copy.deepcopy(w)
+        w_timepointsordered.ts_articles.timepoints = sorted(w_timepointsordered.ts_articles.timepoints, key=lambda x: x.date, reverse=False)
+
+        ts_a, ts_w = timeseries.alignTimeseries(w_timepointsordered.ts_articles,w_timepointsordered.ts_wiki)
+        if len(ts_w.getCounts())<2 or len(ts_a.getCounts())<2:
+            words_analyze.remove(w)
+        else:
+            corr.append(statistics.getCorrelation(ts_a.getCounts(),ts_w.getCounts()))
+    if pid == 0:
+        global result_original
+        result_original = numpy.mean(corr)
+    else:
+        global results_random
+        results_random.append(numpy.mean(corr))
 
 def run(n, max_workers=72):
     # Load all articles from 2019
