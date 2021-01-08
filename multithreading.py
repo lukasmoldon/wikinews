@@ -11,11 +11,12 @@ import graphics
 import matplotlib.pyplot as plt
 import matching
 import time
-import word
+import word as wpy
 import random
 import numpy
 import copy
 from copy import deepcopy
+import logging
 import concurrent.futures
 
 results_random = []
@@ -23,6 +24,7 @@ result_original = None
 articles_original = None
 
 def single_run(pid):
+    logging.info("Starting PID ".format(pid))
     global articles_original
     if pid == 0:
         # compute correlation of original data
@@ -41,7 +43,7 @@ def single_run(pid):
     #Create list of word objects for each keyword
     words = []
     for c in countsPerWeek:
-        words.append(word.Word(c[0],ts_articles=timeseries.Timeseries(c[1])))
+        words.append(wpy.Word(c[0],ts_articles=timeseries.Timeseries(c[1])))
     interestingWords = mng.filter_interestingness(articles, 10, 5)
     keywords = []
     for k in interestingWords:
@@ -80,21 +82,26 @@ def single_run(pid):
     else:
         global results_random
         results_random.append(numpy.mean(corr))
+    logging.info("Finished PID ".format(pid))
 
 def run(n, max_workers=72):
+    logging.info("Loading initial data ...")
     # Load all articles from 2019
     global articles_original
     articles_original = mng.load_articles("nyt2019.json")
+    logging.info("Done.")
 
+    logging.info("Starting ...")
     with concurrent.futures.ThreadPoolExecutor(max_workers=max_workers) as executor:
         executor.map(single_run, range(n+1))
+    logging.info("Done with all tasks.")
 
     global result_original
-    print("Mean correlation in original data: {}").format(result_original)
+    print("Mean correlation in original data: {}".format(result_original))
     global results_random
-    print("Mean correlation in {} random samples: {}").format(n-1, statistics.mean_confidence_interval(results_random))
+    print("Mean correlation in {} random samples: {}".format(n-1, statistics.mean_confidence_interval(results_random)))
     print("Correlation of each sample:")
     print(results_random)
 
 
-run(10)
+run(1000)
