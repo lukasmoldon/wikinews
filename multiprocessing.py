@@ -110,7 +110,7 @@ def run(n, max_workers=72):
     print(random_collection)
 
 
-run(10)
+run(72)
 
 log_endtime = datetime.datetime.now()
 log_runtime = (log_endtime - log_starttime)

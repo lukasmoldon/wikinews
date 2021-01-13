@@ -3,7 +3,9 @@ A survey on wikipedia indicates, that things that pop up in the news are frequen
 
 [>> Data access <<](https://rwth-aachen.sciebo.de/s/dHIeP453099jjvZ)
 
-## Statistics
+To explore wikipedia pageview count manually and to compare it with our results, you can use [this web-interface](https://pageviews.toolforge.org/?project=en.wikipedia.org&platform=all-access&agent=user&redirects=0&start=2019-01-01&end=2019-12-31&pages=) for single requests instead of calling the API.
+
+## Data
 
 |file suffix|restrictions|articles (nyt)|articles (theguardian)|
 |----------------|-------------------------------|-----------------------------|-----------------------------|
