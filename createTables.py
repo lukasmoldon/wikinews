@@ -7,6 +7,7 @@ import word as wpy
 import json
 import matching
 import api_wikipedia as wiki
+import multiprocessing as mp
 
 
 def createYearlyDatabase(path_source, path_result, year):
@@ -37,14 +38,14 @@ def compute_topKeywordsTable(path_source, path_result, n=50):
     # Compute top keywords
     ts_sorted = sorted(words, key=lambda x: x[1], reverse=True)
     keywords = []
-    for i in range(1,n+1):
+    for i in range(0,min(n,len(ts_sorted))):
         keywords.append(ts_sorted[i][0])
     m = matching.groupmatch(keywords, articles)
     writer = open(path_result,'a',encoding="utf-8")
     writer.write("| # | keyword | matching result (simple) | computed query (advanced)  | matching result (advanced) |")
     writer.write("\n|---|---|---|---|---|")
-    for i in range(1,n+1):
-        writer.write("\n| {}. | {} | {} | {} | {} |".format(i, ts_sorted[i][0], wiki.search_articles(ts_sorted[i][0], nmax=1)[1], m[ts_sorted[i][0]]["query"], m[ts_sorted[i][0]]["link"][1]))
+    for i in range(0,len(keywords)):
+        writer.write("\n| {}. | {} | {} | {} | {} |".format(i+1, ts_sorted[i][0], wiki.search_articles(ts_sorted[i][0], nmax=1)[1], m[ts_sorted[i][0]]["query"], m[ts_sorted[i][0]]["link"][1]))
     writer.close()
 
 def compute_mostInterestingKeywordsTable(path_source, path_result, min_weektotal=10, min_changerate=5):
@@ -75,18 +76,41 @@ def compute_mostInterestingKeywordsTable(path_source, path_result, min_weektotal
     writer = open(path_result,'a',encoding="utf-8")
     writer.write("|row|Keyword|week: [ total , changerate ]| computed query (advanced)  | matching result (advanced) |")
     writer.write("\n|---|---|---|---|---|")
-    for i in range(1,len(keywords)+1):
-        writer.write("\n| {}. | {} | {} | {} | {} |".format(i, keywords[i-1], res[keywords[i-1]], m[keywords[i-1]]["query"], m[keywords[i-1]]["link"][1]).replace("{","").replace("}",""))
+    for i in range(0,len(keywords)):
+        writer.write("\n| {}. | {} | {} | {} | {} |".format(i+1, keywords[i], res[keywords[i]], m[keywords[i]]["query"], m[keywords[i]]["link"][1]).replace("{","").replace("}",""))
     writer.close()
 
 
 '''
 # Create yearly database of world news articles for NYT and TheGuardian:
-for year in range(2000,2021):
+for year in range(2001,2021):
     createYearlyDatabase("/home/lmoldon/forschungspraktikum/nyt_reduced.json", "/home/lmoldon/forschungspraktikum/data/nyt{}.json".format(year), year)
-    compute_topKeywordsTable("/home/lmoldon/forschungspraktikum/data/nyt{}.json", "/home/lmoldon/forschungspraktikum/results/nytTop{}.md".format(year, year))
-    compute_mostInterestingKeywordsTable("/home/lmoldon/forschungspraktikum/data/nyt{}.json", "/home/lmoldon/forschungspraktikum/results/nytMostInteresting{}.md".format(year, year))
+    compute_topKeywordsTable("/home/lmoldon/forschungspraktikum/data/nyt{}.json".format(year), "/home/lmoldon/forschungspraktikum/results/nytTop{}.md".format(year))
+    compute_mostInterestingKeywordsTable("/home/lmoldon/forschungspraktikum/data/nyt{}.json".format(year), "/home/lmoldon/forschungspraktikum/results/nytMostInteresting{}.md".format(year))
     createYearlyDatabase("/home/lmoldon/forschungspraktikum/theguardian_reduced.json", "/home/lmoldon/forschungspraktikum/theguardian{}.json".format(year), year)
-    compute_topKeywordsTable("/home/lmoldon/forschungspraktikum/data/theguardian{}.json", "/home/lmoldon/forschungspraktikum/results/theguardianTop{}.md".format(year, year))
-    compute_mostInterestingKeywordsTable("/home/lmoldon/forschungspraktikum/data/theguardian{}.json", "/home/lmoldon/forschungspraktikum/results/theguardianMostInteresting{}.md".format(year, year))
+    compute_topKeywordsTable("/home/lmoldon/forschungspraktikum/data/theguardian{}.json".format(year), "/home/lmoldon/forschungspraktikum/results/theguardianTop{}.md".format(year))
+    compute_mostInterestingKeywordsTable("/home/lmoldon/forschungspraktikum/data/theguardian{}.json".format(year), "/home/lmoldon/forschungspraktikum/results/theguardianMostInteresting{}.md".format(year))
+'''
+
+'''
+# WITH MULTIPROCESSING: Create yearly database of world news articles for NYT and TheGuardian:
+def single_run(year, nyt):
+    if nyt:
+        createYearlyDatabase("/home/lmoldon/forschungspraktikum/nyt_reduced.json", "/home/lmoldon/forschungspraktikum/data/nyt{}.json".format(year), year)
+        compute_topKeywordsTable("/home/lmoldon/forschungspraktikum/data/nyt{}.json".format(year), "/home/lmoldon/forschungspraktikum/results/nytTop{}.md".format(year))
+        compute_mostInterestingKeywordsTable("/home/lmoldon/forschungspraktikum/data/nyt{}.json".format(year), "/home/lmoldon/forschungspraktikum/results/nytMostInteresting{}.md".format(year))
+    else:
+        createYearlyDatabase("/home/lmoldon/forschungspraktikum/theguardian_reduced.json", "/home/lmoldon/forschungspraktikum/theguardian{}.json".format(year), year)
+        compute_topKeywordsTable("/home/lmoldon/forschungspraktikum/data/theguardian{}.json".format(year), "/home/lmoldon/forschungspraktikum/results/theguardianTop{}.md".format(year))
+        compute_mostInterestingKeywordsTable("/home/lmoldon/forschungspraktikum/data/theguardian{}.json".format(year), "/home/lmoldon/forschungspraktikum/results/theguardianMostInteresting{}.md".format(year))
+
+tasks = []
+for year in range(2001,2021):
+    for flag in range(0,2):
+        tasks.append((year, flag))
+processes = [mp.Process(target=single_run, args=(task[0], task[1])) for task in tasks]
+for p in processes:
+    p.start()
+for p in processes:
+    p.join()
 '''
