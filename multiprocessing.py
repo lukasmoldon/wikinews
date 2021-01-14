@@ -24,7 +24,7 @@ logging.basicConfig(format='%(asctime)s [%(levelname)s] - %(message)s', datefmt=
 
 output = mp.Queue()
 
-def single_run(pid, articles):
+def single_run_partA(pid, articles):
     logging.info("Starting PID {}".format(pid))
     if pid > 0:
         # create random sample and compute correlation
@@ -50,7 +50,9 @@ def single_run(pid, articles):
     keywords = []
     for k in interestingWords:
         keywords.append(k)
-    m = matching.groupmatch(keywords, articles)
+    output.put([pid,articles,keywords,words])
+    
+def single_run_partB(pid, m, words):
     logging.debug("PID {}: F".format(pid))
     for key in m.keys():
         #Following line from 
@@ -92,15 +94,28 @@ def run(n, max_workers=72):
     logging.info("Done.")
 
     logging.info("Starting ...")
-    processes = [mp.Process(target=single_run, args=(pid, deepcopy(articles_original))) for pid in range(n+1)]
+    processes = [mp.Process(target=single_run_partA, args=(pid, deepcopy(articles_original))) for pid in range(n+1)]
     for p in processes:
         p.start()
     for p in processes:
         p.join()
-    results = [output.get() for p in processes]
-    logging.info("Done with all tasks.")
+    resultsA = [output.get() for p in processes]
+    logging.info("Done with part A.")
+    m = {}
+    logging.info("Matching...")
+    for el in resultsA:
+        m[el[0]] = matching.groupmatch(el[2], el[1])
+        logging.debug("Done with matching for PID {}".format(el[0]))
+    logging.info("Done with matching.")
+    processes = [mp.Process(target=single_run_partB, args=(pid, deepcopy(m[pid]), deepcopy(resultsA[pid][3]))) for pid in range(n+1)]
+    for p in processes:
+        p.start()
+    for p in processes:
+        p.join()
+    resultsB = [output.get() for p in processes]
+    logging.info("Done with part B.")
     random_collection = []
-    for el in results:
+    for el in resultsB:
         if el[0] == 0:
             print("Mean correlation in original data: {}".format(el[1]))
         else:
@@ -110,7 +125,7 @@ def run(n, max_workers=72):
     print(random_collection)
 
 
-run(72)
+run(n=5)
 
 log_endtime = datetime.datetime.now()
 log_runtime = (log_endtime - log_starttime)
