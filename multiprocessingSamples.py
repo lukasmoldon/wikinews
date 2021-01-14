@@ -22,7 +22,8 @@ import multiprocessing as mp
 log_starttime = datetime.datetime.now()
 logging.basicConfig(format='%(asctime)s [%(levelname)s] - %(message)s', datefmt='%d-%m-%y %H:%M:%S', level=logging.DEBUG)
 
-output = mp.Queue()
+mananger = mp.Manager()
+output = mananger.Queue()
 
 def single_run_partA(pid, articles):
     logging.info("Starting PID {}".format(pid))
@@ -46,29 +47,13 @@ def single_run_partA(pid, articles):
         words.append(wpy.Word(c[0],ts_articles=timeseries.Timeseries(c[1])))
     logging.debug("PID {}: D".format(pid))
     interestingWords = mng.filter_interestingness(articles, 10, 5)
-    logging.debug("PID {}: E".format(pid))
     keywords = []
     for k in interestingWords:
         keywords.append(k)
-    output.put([pid,articles,keywords,words])
+    logging.debug("PID {}: E".format(pid))
+    output.put([pid,keywords,words])
     
 def single_run_partB(pid, m, words):
-    logging.debug("PID {}: F".format(pid))
-    for key in m.keys():
-        #Following line from 
-        #https://stackoverflow.com/questions/7125467/find-object-in-list-that-has-attribute-equal-to-some-value-that-meets-any-condi
-        try:
-            word = next((x for x in words if x.keyword == key), None)
-            query = m[key]['query']
-            page = m[key]['link'][1]
-            wiki_counts = wiki.get_counts(page, word.ts_articles.getStartDate(), word.ts_articles.getEndDate(),"en")
-            if wiki_counts is not None:
-                #If wikipedia timeseries exists
-                word.coocKeywords = query
-                word.wikipediaSite = page
-                word.ts_wiki = timeseries.parseWikipediaCounts(wiki_counts)
-        except:
-            print("ERROR: Key is invalid")
     logging.debug("PID {}: G".format(pid))
     words_analyze = [x for x in words if x.wikipediaSite != ""]
     logging.debug("PID {}: H".format(pid))
@@ -102,12 +87,30 @@ def run(n, max_workers=72):
     resultsA = [output.get() for p in processes]
     logging.info("Done with part A.")
     m = {}
+    res = {}
     logging.info("Matching...")
     for el in resultsA:
-        m[el[0]] = matching.groupmatch(el[2], el[1])
+        m[el[0]] = matching.groupmatch(el[1], articles_original)
         logging.debug("Done with matching for PID {}".format(el[0]))
+        for key in m[el[0]].keys():
+            #Following line from 
+            #https://stackoverflow.com/questions/7125467/find-object-in-list-that-has-attribute-equal-to-some-value-that-meets-any-condi
+            try:
+                word = next((x for x in el[2] if x.keyword == key), None)
+                query = m[el[0]][key]['query']
+                page = m[el[0]][key]['link'][1]
+                wiki_counts = wiki.get_counts(page, word.ts_articles.getStartDate(), word.ts_articles.getEndDate(),"en")
+                if wiki_counts is not None:
+                    #If wikipedia timeseries exists
+                    word.coocKeywords = query
+                    word.wikipediaSite = page
+                    word.ts_wiki = timeseries.parseWikipediaCounts(wiki_counts)
+            except:
+                print("ERROR: Key is invalid")
+        res[el[0]] = el[2]
     logging.info("Done with matching.")
-    processes = [mp.Process(target=single_run_partB, args=(pid, deepcopy(m[pid]), deepcopy(resultsA[pid][3]))) for pid in range(n+1)]
+
+    processes = [mp.Process(target=single_run_partB, args=(pid, deepcopy(m[pid]), deepcopy(res[pid]))) for pid in range(n+1)]
     for p in processes:
         p.start()
     for p in processes:
@@ -115,17 +118,24 @@ def run(n, max_workers=72):
     resultsB = [output.get() for p in processes]
     logging.info("Done with part B.")
     random_collection = []
+    random_size = []
     for el in resultsB:
-        if el[0] == 0:
-            print("Mean correlation in original data: {}".format(el[1]))
-        else:
-            random_collection.append(el[1])
-    print("Mean correlation in {} random samples: {}".format(n-1, statistics.mean_confidence_interval(random_collection)))
+        if len(el) == 2:
+            if el[0] == 0:
+                print("Mean correlation in original data: {}".format(el[1]))
+                print("Number keywords in original data: {}".format(len(m[0])))
+            else:
+                random_collection.append(el[1])
+                random_size.append(len(m[el[0]]))
+    print("Mean correlation in {} random samples: {}".format(n, statistics.mean_confidence_interval(random_collection)))
+    print("Mean number keywords in {} random samples: {}".format(n, statistics.mean_confidence_interval(random_size)))
+    print("Number keywords of each sample:")
+    print(random_size)
     print("Correlation of each sample:")
     print(random_collection)
 
 
-run(n=5)
+run(n=2)
 
 log_endtime = datetime.datetime.now()
 log_runtime = (log_endtime - log_starttime)
