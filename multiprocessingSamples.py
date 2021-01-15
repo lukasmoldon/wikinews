@@ -72,7 +72,7 @@ def single_run_partB(pid, m, words):
     output.put([pid,numpy.mean(corr)])
     logging.info("Finished PID {}".format(pid))
 
-def run(n, max_workers=72):
+def run(n):
     logging.info("Loading initial data ...")
     # Load all articles from 2019
     articles_original = mng.load_articles("nyt2019.json")
@@ -135,7 +135,7 @@ def run(n, max_workers=72):
     print(random_collection)
 
 
-run(n=1000, max_workers=72)
+run(1000)
 
 log_endtime = datetime.datetime.now()
 log_runtime = (log_endtime - log_starttime)

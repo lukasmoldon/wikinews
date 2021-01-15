@@ -45,7 +45,10 @@ def compute_topKeywordsTable(path_source, path_result, n=50):
     writer.write("| # | keyword | matching result (simple) | computed query (advanced)  | matching result (advanced) |")
     writer.write("\n|---|---|---|---|---|")
     for i in range(0,len(keywords)):
-        writer.write("\n| {}. | {} | {} | {} | {} |".format(i+1, ts_sorted[i][0], wiki.search_articles(ts_sorted[i][0], nmax=1)[1], m[ts_sorted[i][0]]["query"], m[ts_sorted[i][0]]["link"][1]))
+        if len(m[ts_sorted[i][0]]["link"]) > 0:
+            writer.write("\n| {}. | {} | {} | {} | {} |".format(i+1, ts_sorted[i][0], wiki.search_articles(ts_sorted[i][0], nmax=1)[1], m[ts_sorted[i][0]]["query"], m[ts_sorted[i][0]]["link"][1]))
+        else:
+            writer.write("\n| {}. | {} | {} | {} | EMPTY MATCHING |".format(i+1, ts_sorted[i][0], wiki.search_articles(ts_sorted[i][0], nmax=1)[1], m[ts_sorted[i][0]]["query"]))
     writer.close()
 
 def compute_mostInterestingKeywordsTable(path_source, path_result, min_weektotal=10, min_changerate=5):
@@ -77,7 +80,10 @@ def compute_mostInterestingKeywordsTable(path_source, path_result, min_weektotal
     writer.write("|row|Keyword|week: [ total , changerate ]| computed query (advanced)  | matching result (advanced) |")
     writer.write("\n|---|---|---|---|---|")
     for i in range(0,len(keywords)):
-        writer.write("\n| {}. | {} | {} | {} | {} |".format(i+1, keywords[i], res[keywords[i]], m[keywords[i]]["query"], m[keywords[i]]["link"][1]).replace("{","").replace("}",""))
+        if len(m[keywords[i]]["link"]) > 0:
+            writer.write("\n| {}. | {} | {} | {} | {} |".format(i+1, keywords[i], res[keywords[i]], m[keywords[i]]["query"], m[keywords[i]]["link"][1]).replace("{","").replace("}",""))
+        else:
+            writer.write("\n| {}. | {} | {} | {} | EMPTY MATCHING |".format(i+1, keywords[i], res[keywords[i]], m[keywords[i]]["query"]).replace("{","").replace("}",""))
     writer.close()
 
 
@@ -100,7 +106,7 @@ def single_run(year, nyt):
         compute_topKeywordsTable("/home/lmoldon/forschungspraktikum/data/nyt{}.json".format(year), "/home/lmoldon/forschungspraktikum/results/nytTop{}.md".format(year))
         compute_mostInterestingKeywordsTable("/home/lmoldon/forschungspraktikum/data/nyt{}.json".format(year), "/home/lmoldon/forschungspraktikum/results/nytMostInteresting{}.md".format(year))
     else:
-        createYearlyDatabase("/home/lmoldon/forschungspraktikum/theguardian_reduced.json", "/home/lmoldon/forschungspraktikum/theguardian{}.json".format(year), year)
+        createYearlyDatabase("/home/lmoldon/forschungspraktikum/theguardian_reduced.json", "/home/lmoldon/forschungspraktikum/data/theguardian{}.json".format(year), year)
         compute_topKeywordsTable("/home/lmoldon/forschungspraktikum/data/theguardian{}.json".format(year), "/home/lmoldon/forschungspraktikum/results/theguardianTop{}.md".format(year))
         compute_mostInterestingKeywordsTable("/home/lmoldon/forschungspraktikum/data/theguardian{}.json".format(year), "/home/lmoldon/forschungspraktikum/results/theguardianMostInteresting{}.md".format(year))
 
