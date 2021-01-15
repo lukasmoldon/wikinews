@@ -3,9 +3,9 @@ A survey on wikipedia indicates, that things that pop up in the news are frequen
 
 ## Data
 
-[>> Data access <<](https://rwth-aachen.sciebo.de/s/dHIeP453099jjvZ)
-
 To explore wikipedia pageview count manually and to compare it with our results, you can use [this web-interface](https://pageviews.toolforge.org/?project=en.wikipedia.org&platform=all-access&agent=user&redirects=0&start=2019-01-01&end=2019-12-31&pages=) for single requests instead of calling the API.
+
+[>> Data access <<](https://rwth-aachen.sciebo.de/s/dHIeP453099jjvZ)
 
 |file suffix|restrictions|articles (nyt)|articles (theguardian)|
 |----------------|-------------------------------|-----------------------------|-----------------------------|
@@ -15,6 +15,17 @@ To explore wikipedia pageview count manually and to compare it with our results,
 |_ground_truth|randomly selected world news articles published in 2001 or later **manually labeled** with related wikipedia links (for measuring accuracy of matching algorithms)|200|200|
 
 ## Top keywords 2019 - New York Times: Exemplary results
+
+- These tables only consider keywords in articles, which have been categorized as 'world news articles' by the   
+respective newspaper
+- **Column 1:** The position within the ranking
+- **Column 2:** The name of the keyword
+- **Column 3:** The name* of the resulting Wikipedia article computed from our simple keyword matching approach. Here the API query is always identical with the name of the keyword.
+- **Column 4:** The computed query for our advanced keyword matching approach
+- **Column 5:** The name* of the resulting Wikipedia article computed from our advanced keyword matching approach. Here we use column 4 as query for the API call.
+
+(* use the link https://en.wikipedia.org/wiki/_PLACEHOLDER_ and replace the placeholder by the name)
+
 | # | keyword | matching result (simple) | computed query (advanced)  | matching result (advanced) |
 |---|---|---|---|---|
 | 1. | president | President | president trump leader | Donald_Trump |
@@ -69,6 +80,21 @@ To explore wikipedia pageview count manually and to compare it with our results,
 | 50. | european | European | european union brexit | Impact_of_Brexit_on_the_European_Union |
 
 ## Maximum Interestingness 2019 - New York Times: Exemplary results (min_weektotal=10, min_changerate=5)
+
+- These tables only consider keywords in articles, which have been categorized as 'world news articles' by the
+respective newspaper. 
+- The table lists all keywords which fulfill the following two conditions at the same time in at least one calendar week:
+	- 1. Keyword was mentioned at least 10 times in the news in a week.
+	- 2. Keyword was not mentioned in the respective calendar week before (maximum/infinite changerate of news mentions).
+- Additionally calendar weeks, where these keywords have a changerate of at least 5, are also given.
+- **Column 1:** The row number, the table is sorted  by the first appearing calendar week of each keyword.
+- **Column 2:** The name of the keyword
+- **Column 3:** The changerates, which fulfill the conditions (as described above): The first value in front of the brackets represents the corresponding calendar week number. The first value within the brackets represents the total frequency of the keyword in that week. The second value represents the changerate compared to the week before.
+- **Column 4:** The computed query for our advanced keyword matching approach
+- **Column 5:** The name* of the resulting Wikipedia article computed from our advanced keyword matching approach. Here we use column 4 as query for the API call.
+
+(* use the link https://en.wikipedia.org/wiki/_PLACEHOLDER_ and replace the placeholder by the name)
+
 |row|Keyword|week: [ total , changerate ]| computed query (advanced)  | matching result (advanced) |
 |---|---|---|---|---|
 | 1. | charges | 2: [12, inf], 4: [12, 6.0] | charges former court | Impeachment |
