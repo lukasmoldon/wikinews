@@ -45,10 +45,15 @@ def compute_topKeywordsTable(path_source, path_result, n=50):
     writer.write("| # | keyword | matching result (simple) | computed query (advanced)  | matching result (advanced) |")
     writer.write("\n|---|---|---|---|---|")
     for i in range(0,len(keywords)):
-        if len(m[ts_sorted[i][0]]["link"]) > 0:
-            writer.write("\n| {}. | {} | {} | {} | {} |".format(i+1, ts_sorted[i][0], wiki.search_articles(ts_sorted[i][0], nmax=1)[1], m[ts_sorted[i][0]]["query"], m[ts_sorted[i][0]]["link"][1]))
-        else:
-            writer.write("\n| {}. | {} | {} | {} | EMPTY MATCHING |".format(i+1, ts_sorted[i][0], wiki.search_articles(ts_sorted[i][0], nmax=1)[1], m[ts_sorted[i][0]]["query"]))
+        simple = wiki.search_articles(ts_sorted[i][0], nmax=1)
+        if len(simple) > 0 and len(m[ts_sorted[i][0]]["link"]) > 0:
+            writer.write("\n| {}. | {} | {} | {} | {} |".format(i+1, ts_sorted[i][0], simple[1], m[ts_sorted[i][0]]["query"], m[ts_sorted[i][0]]["link"][1]))
+        elif len(simple) > 0 and len(m[ts_sorted[i][0]]["link"]) == 0:
+            writer.write("\n| {}. | {} | {} | {} | EMPTY MATCHING |".format(i+1, ts_sorted[i][0], simple[1], m[ts_sorted[i][0]]["query"]))
+        elif len(simple) == 0 and len(m[ts_sorted[i][0]]["link"]) > 0:
+            writer.write("\n| {}. | {} | EMPTY MATCHING | {} | {} |".format(i+1, ts_sorted[i][0], m[ts_sorted[i][0]]["query"], m[ts_sorted[i][0]]["link"][1]))
+        elif len(simple) == 0 and len(m[ts_sorted[i][0]]["link"]) == 0:
+            writer.write("\n| {}. | {} | EMPTY MATCHING | {} | EMPTY MATCHING |".format(i+1, ts_sorted[i][0], m[ts_sorted[i][0]]["query"]))
     writer.close()
 
 def compute_mostInterestingKeywordsTable(path_source, path_result, min_weektotal=10, min_changerate=5):
