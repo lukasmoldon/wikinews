@@ -2,7 +2,7 @@ from nltk.stem import LancasterStemmer
 from nltk.stem import PorterStemmer
 from nltk.corpus import stopwords 
 from nltk.tokenize import word_tokenize 
-import spacy
+#import spacy
 import nltk
 import string
 import re

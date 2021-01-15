@@ -1,11 +1,11 @@
 ## Wikinews (CSSH Forschungspraktikum)
 A survey on wikipedia indicates, that things that pop up in the news are frequently being browsed for. We would like to explore the hypothesis further by using a news webpage like nytimes and comparing topics with the viewcounts of wikipedia articles.  
 
+## Data
+
 [>> Data access <<](https://rwth-aachen.sciebo.de/s/dHIeP453099jjvZ)
 
 To explore wikipedia pageview count manually and to compare it with our results, you can use [this web-interface](https://pageviews.toolforge.org/?project=en.wikipedia.org&platform=all-access&agent=user&redirects=0&start=2019-01-01&end=2019-12-31&pages=) for single requests instead of calling the API.
-
-## Data
 
 |file suffix|restrictions|articles (nyt)|articles (theguardian)|
 |----------------|-------------------------------|-----------------------------|-----------------------------|
@@ -14,237 +14,139 @@ To explore wikipedia pageview count manually and to compare it with our results,
 |_partition|world news articles published in January 2001|678|603|
 |_ground_truth|randomly selected world news articles published in 2001 or later **manually labeled** with related wikipedia links (for measuring accuracy of matching algorithms)|200|200|
 
-## Matching: Exemplary results
-| Top-Ranking (2019) | keyword | matching result (simple) | computed query (advanced)  | matching result (advanced) |
+## Top keywords 2019 - New York Times: Exemplary results
+| # | keyword | matching result (simple) | computed query (advanced)  | matching result (advanced) |
 |---|---|---|---|---|
-|1.|says|Says|says president trump|Donald_Trump|
-|2.|trump|Trump|trump president u.s.|Donald_Trump|
-|3.|hong|Hong|hong kong protesters|2019–20_Hong_Kong_protests|
-|4.|kong|Kong|kong hong protesters|2019–20_Hong_Kong_protests|
-|5.|china|China|china hong kong|Hong_Kong|
-|6.|brexit|Brexit|brexit johnson prime|Boris_Johnson|
-|7.|iran|Iran|iran u.s. trump|Donald_Trump|
-|8.|u.k.|United_Kingdom|u.k. brexit britain|Brexit|
-|9.|leader|Leadership|leader president trump|Donald_Trump|
-|10.|election|Election|election minister prime|List_of_prime_ministers_of_India|
-|11.|protests|Protest|protests hong kong|2019–20_Hong_Kong_protests|
-|12.|police|Police|police hong kong|Hong_Kong_Police_Force|
-|13.|korea|Korea|korea north south|North_Korea–South_Korea_relations|
-|14.|president|President|president trump leader|Donald_Trump|
-|15.|say|Say|say officials police|SayHerName|
-|16.|north|North|north korea trump|North_Korea–United_States_relations|
-|17.|may|May|may brexit minister|Brexit|
-|18.|india|India|india modi pakistan|Narendra_Modi|
-|19.|johnson|Johnson|johnson boris brexit|Premiership_of_Boris_Johnson|
-|20.|south|South|south korea north|North_Korea–South_Korea_relations|
-|21.|protesters|Protest|protesters hong kong|2019–20_Hong_Kong_protests|
-|22.|russia|Russia|russia russian putin|Vladimir_Putin|
-|23.|syria|Syria|syria isis u.s.|Islamic_State_of_Iraq_and_the_Levant|
-|24.|attack|Attack|attack police killed|2016_shooting_of_Dallas_police_officers|
-|25.|isis|Islamic_State_of_Iraq_and_the_Levant|isis syria state|Islamic_State_of_Iraq_and_the_Levant|
-|26.|boris|Boris|boris johnson brexit|Premiership_of_Boris_Johnson|
-|27.|afghan|Afghan|afghan taliban peace|Afghan_peace_process|
-|28.|taliban|Taliban|taliban afghan talks|Afghan_peace_process|
-|29.|venezuela|Venezuela|venezuela maduro opposition|Nicolás_Maduro|
-|30.|deal|Deal|deal brexit iran|2019_Conservative_Party_leadership_election|
-|31.|killed|Killed_in_action|killed people least|List_of_people_killed_for_being_transgender|
-|32.|minister|Minister|minister prime brexit|Timeline_of_Brexit|
-|33.|military|Military|military u.s. president|List_of_presidents_of_the_United_States_by_military_service|
-|34.|talks|Talk|talks taliban peace|Afghan_peace_process|
-|35.|killing|Killing|killing people khashoggi|Assassination_of_Jamal_Khashoggi|
-|36.|france|France|france president macron|Emmanuel_Macron|
-|37.|government|Government|government minister president|Minister-president|
-|38.|israel|Israel|israel netanyahu minister|Benjamin_Netanyahu|
-|39.|zealand|Zealand|zealand christchurch minister|Christchurch_mosque_shootings|
-|40.|u.n.|United_Nations|u.n. united nations|United_Nations|
-|41.|parliament|Parliament|parliament brexit minister|Timeline_of_Brexit|
-|42.|court|Court|court supreme former|Supreme_Court_of_the_United_States|
-|43.|death|Death|death toll two|List_of_disasters_in_the_United_States_by_death_toll|
-|44.|canada|Canada|canada trudeau minister|Margaret_Trudeau|
-|45.|dead|Death|dead people least|List_of_rampage_killers|
-|46.|saudi|Saudi|saudi arabia iran|Iran–Saudi_Arabia_relations|
-|47.|vote|Voting|vote brexit election|Causes_of_the_vote_in_favour_of_Brexit|
-|48.|party|Party|party election minister|2015_Canadian_federal_election|
-|49.|japan|Japan|japan korea south|Japan–South_Korea_relations|
-|50.|first|First|first time president|President_of_East_Timor|
+| 1. | president | President | president trump leader | Donald_Trump |
+| 2. | trump | Trump | trump president u.s. | Donald_Trump |
+| 3. | minister | Minister | minister prime brexit | Timeline_of_Brexit |
+| 4. | government | Government | government minister president | Minister-president |
+| 5. | china | China | china hong kong | Hong_Kong |
+| 6. | country | Country | country president minister | Minister-president |
+| 7. | prime | Prime_number | prime minister brexit | Theresa_May |
+| 8. | u.s. | U.S._state | u.s. american trump | Donald_Trump_Jr. |
+| 9. | police | Police | police hong kong | Hong_Kong_Police_Force |
+| 10. | people | People | people killed least | List_of_people_killed_for_being_transgender |
+| 11. | leader | Leadership | leader president trump | Donald_Trump |
+| 12. | says | Says | says president trump | Donald_Trump |
+| 13. | two | 2 | two people killed | List_of_people_killed_for_being_transgender |
+| 14. | iran | Iran | iran u.s. trump | Iran–United_States_relations |
+| 15. | hong | Hong | hong kong protesters | 2019–20_Hong_Kong_protests |
+| 16. | kong | Kong | kong hong protesters | 2019–20_Hong_Kong_protests |
+| 17. | american | American | american u.s. trump | Presidency_of_Donald_Trump |
+| 18. | officials | Official | officials say u.s. | Utah_Data_Center |
+| 19. | election | Election | election minister prime | List_of_prime_ministers_of_India |
+| 20. | brexit | Brexit | brexit johnson prime | Boris_Johnson |
+| 21. | say | Say | say officials police | SayHerName |
+| 22. | could | English_modal_verbs | could trump president | Donald_Trump |
+| 23. | protests | Protest | protests hong kong | 2019–20_Hong_Kong_protests |
+| 24. | united | United | united states nations | Member_states_of_the_United_Nations |
+| 25. | north | North | north korea trump | North_Korea–United_States_relations |
+| 26. | killed | Killed_in_action | killed people least | List_of_people_killed_for_being_transgender |
+| 27. | years | Years_&_Years | years two ago | Two_Years_Ago |
+| 28. | party | Party | party election minister | List_of_chief_ministers_of_Uttar_Pradesh |
+| 29. | would | Would? | would president trump | Donald_Trump |
+| 30. | may | May | may brexit minister | Brexit |
+| 31. | military | Military | military u.s. president | List_of_presidents_of_the_United_States_by_military_service |
+| 32. | korea | Korea | korea north south | North_Korea–South_Korea_relations |
+| 33. | state | State | state islamic isis | Islamic_State_of_Iraq_and_the_Levant |
+| 34. | political | Politics | political minister president | Minister_President_of_Prussia |
+| 35. | attack | Attack | attack police killed | 2016_shooting_of_Dallas_police_officers |
+| 36. | first | First | first time president | President_of_East_Timor |
+| 37. | britain | United_Kingdom | britain brexit minister | Brexit |
+| 38. | protesters | Protest | protesters hong kong | 2019–20_Hong_Kong_protests |
+| 39. | south | South | south korea north | North_Korea–South_Korea_relations |
+| 40. | deal | Deal | deal brexit iran | Boris_Johnson |
+| 41. | former | Former | former president minister | List_of_presidents_of_India |
+| 42. | world | World | world leaders around | Reactions_to_the_assassination_of_John_F._Kennedy |
+| 43. | british | British | british brexit minister | Brexit |
+| 44. | russia | Russia | russia russian putin | Vladimir_Putin |
+| 45. | parliament | Parliament | parliament brexit minister | Timeline_of_Brexit |
+| 46. | states | State | states united trump | Donald_Trump |
+| 47. | syria | Syria | syria isis u.s. | Islamic_State_of_Iraq_and_the_Levant |
+| 48. | india | India | india modi pakistan | 2014_India–Pakistan_floods |
+| 49. | many | Many | many say country | COVID-19_pandemic_by_country_and_territory |
+| 50. | european | European | european union brexit | Impact_of_Brexit_on_the_European_Union |
 
-## Interestingness: Exemplary results (min_weektotal=10, min_changerate=5)
-|Highest changerate (2019)|Keyword|week: [ total , changerate ]|
-|---|---|---|
-|1. |charges|2: [12, inf], 4: [12, 6.0]|
-|1. |officials|2: [14, inf], 43: [11, 11.0]|
-|1. |court|2: [10, inf], 51: [16, inf]|
-|1. |venezuela|4: [20, 10.0], 18: [16, inf]|
-|1. |maduro|4: [16, 8.0], 8: [19, inf], 18: [10, inf]|
-|1. |help|5: [10, inf], 25: [10, 5.0]|
-|1. |election|7: [12, 12.0], 11: [10, 10.0], 13: [14, 14.0], 25: [10, inf]|
-|1. |report|10: [10, inf]|
-|1. |black|10: [11, inf]|
-|1. |border|11: [10, 10.0], 14: [12, inf], 46: [12, 12.0]|
-|1. |vote|11: [11, inf], 37: [10, 5.0], 50: [10, inf]|
-|1. |christchurch|11: [14, inf]|
-|1. |mosques|11: [14, inf]|
-|1. |massacre|11: [11, inf]|
-|1. |erdogan|14: [10, inf]|
-|1. |leaders|14: [11, 5.5], 49: [10, inf]|
-|1. |india|15: [15, 7.5], 18: [11, inf], 20: [10, 10.0], 51: [17, 5.666666666666667]|
-|1. |assange|15: [10, inf]|
-|1. |north|16: [13, 6.5], 25: [26, inf], 40: [11, 11.0]|
-|1. |notre-dame|16: [33, inf]|
-|1. |cathedral|16: [32, inf]|
-|1. |paris|16: [14, inf], 40: [10, inf]|
-|1. |sri|16: [16, inf]|
-|1. |lanka|16: [12, inf]|
-|1. |attacks|17: [32, 8.0], 38: [10, inf]|
-|1. |sunday|17: [17, inf]|
-|1. |putin|17: [10, inf]|
-|1. |protest|18: [11, inf], 27: [10, 5.0], 30: [10, inf]|
-|1. |opposition|18: [12, inf]|
-|1. |guaidó|18: [12, inf]|
-|1. |crisis|18: [12, inf]|
-|1. |fani|18: [10, inf]|
-|1. |iraq|19: [11, inf]|
-|1. |last|19: [10, inf]|
-|1. |forces|21: [10, 5.0], 31: [10, inf]|
-|1. |union|21: [12, 6.0], 42: [10, inf]|
-|1. |political|22: [10, 5.0], 29: [14, 14.0], 42: [10, 5.0], 51: [12, inf]|
-|1. |boat|22: [13, inf]|
-|1. |wife|22: [10, inf]|
-|1. |iran|24: [13, inf]|
-|1. |shooting|25: [12, inf]|
-|1. |must|25: [11, inf]|
-|1. |climate|25: [10, inf]|
-|1. |mexico|25: [10, 10.0], 45: [10, inf]|
-|1. |around|25: [10, inf]|
-|1. |g|26: [11, inf]|
-|1. |japan|26: [10, inf], 41: [12, 6.0]|
-|1. |kashmir|32: [13, inf]|
-|1. |iranian|33: [10, inf], 39: [10, 10.0]|
-|1. |prince|34: [11, inf]|
-|1. |fires|34: [23, inf]|
-|1. |amazon|34: [14, inf]|
-|1. |residents|36: [10, inf]|
-|1. |pope|36: [10, inf]|
-|1. |francis|36: [11, inf]|
-|1. |australia|37: [12, inf]|
-|1. |netanyahu|37: [13, inf], 47: [10, inf]|
-|1. |israel|37: [14, inf]|
-|1. |gantz|38: [10, inf]|
-|1. |trudeau|38: [15, inf]|
-|1. |peru|40: [12, inf]|
-|1. |kurds|41: [12, inf]|
-|1. |kurdish|41: [11, inf]|
-|1. |turkey|41: [15, inf]|
-|1. |troops|41: [10, inf]|
-|1. |syrian|41: [13, inf]|
-|1. |militia|41: [11, inf]|
-|1. |turkish|41: [10, inf]|
-|1. |typhoon|41: [16, inf]|
-|1. |amid|42: [11, inf]|
-|1. |lawmakers|42: [19, inf]|
-|1. |al-baghdadi|43: [10, inf]|
-|1. |mining|45: [10, inf]|
-|1. |macron|49: [12, inf]|
-|1. |eruption|50: [11, inf]|
-|1. |white|50: [10, inf]|
-|1. |nobel|50: [10, inf]|
-|1. |base|50: [10, inf]|
-|1. |christmas|52: [18, inf]|
-|80. |trump|12: [12, 6.0], 25: [44, 44.0]|
-|81. |taliban|4: [23, 23.0]|
-|82. |korea|12: [13, 6.5], 25: [22, 22.0]|
-|83. |american|9: [19, 19.0]|
-|84. |would|4: [18, 18.0]|
-|85. |could|2: [10, 10.0], 9: [13, 6.5], 20: [12, 6.0], 33: [17, 17.0]|
-|86. |u.s.|9: [24, 6.0], 31: [17, 8.5], 50: [16, 16.0]|
-|86. |parliament|35: [16, 8.0], 42: [16, 16.0]|
-|86. |people|51: [16, 16.0]|
-|89. |zealand|11: [30, 15.0], 50: [11, 5.5]|
-|89. |deal|33: [15, 15.0], 42: [35, 5.833333333333333]|
-|91. |syria|2: [11, 11.0], 37: [11, 5.5], 41: [28, 14.0]|
-|91. |family|23: [12, 6.0], 45: [14, 14.0]|
-|93. |canada|9: [13, 13.0]|
-|93. |visit|13: [13, 13.0], 23: [21, 5.25]|
-|93. |fire|16: [26, 13.0], 46: [11, 5.5]|
-|93. |many|18: [10, 10.0], 31: [13, 13.0], 37: [10, 10.0], 44: [11, 5.5]|
-|93. |group|26: [13, 13.0]|
-|93. |day|37: [13, 13.0]|
-|99. |abuse|8: [12, 12.0]|
-|99. |state|12: [12, 12.0], 29: [10, 5.0]|
-|99. |protests|27: [12, 12.0], 36: [20, 1.0], 52: [11, 11.0]|
-|102. |britain|21: [15, 7.5], 30: [11, 11.0]|
-|102. |days|41: [11, 11.0]|
-|102. |media|50: [11, 11.0]|
-|105. |faces|2: [10, 5.0], 11: [10, 10.0]|
-|105. |woman|2: [11, 5.5], 14: [10, 10.0]|
-|105. |cyclone|12: [12, 6.0], 17: [10, 10.0]|
-|105. |storm|12: [11, 5.5], 41: [10, 10.0]|
-|105. |head|13: [10, 10.0]|
-|105. |brunei|14: [10, 10.0]|
-|105. |police|16: [10, 10.0]|
-|105. |easter|17: [20, 10.0]|
-|105. |came|20: [10, 10.0]|
-|105. |queen|23: [10, 10.0]|
-|105. |bill|24: [20, 10.0]|
-|105. |top|29: [10, 10.0], 39: [10, 5.0]|
-|105. |johnson|34: [10, 10.0], 39: [24, 6.0], 50: [15, 5.0]|
-|105. |island|50: [10, 10.0]|
-|105. |labour|50: [10, 10.0]|
-|120. |ethiopian|11: [29, 9.666666666666666]|
-|121. |two|19: [18, 9.0]|
-|122. |first|24: [17, 8.5], 46: [10, 5.0]|
-|122. |africa|36: [17, 8.5]|
-|124. |victims|11: [16, 8.0]|
-|124. |isis|12: [10, 5.0], 43: [16, 8.0]|
-|126. |leader|11: [14, 7.0], 24: [15, 7.5]|
-|127. |say|2: [14, 7.0]|
-|127. |talks|9: [21, 7.0]|
-|127. |time|40: [14, 7.0]|
-|127. |corruption|40: [14, 7.0]|
-|131. |hong|24: [40, 6.666666666666667]|
-|131. |kong|24: [40, 6.666666666666667]|
-|131. |law|33: [11, 5.5], 51: [20, 6.666666666666667]|
-|134. |plane|11: [13, 6.5]|
-|134. |flight|11: [13, 6.5]|
-|134. |sudan|15: [13, 6.5]|
-|134. |country|36: [13, 6.5]|
-|138. |brexit|3: [22, 5.5], 42: [30, 6.0]|
-|138. |military|4: [10, 5.0], 29: [12, 6.0]|
-|138. |made|8: [12, 6.0]|
-|138. |max|11: [12, 6.0]|
-|138. |russia|13: [10, 5.0], 46: [12, 6.0]|
-|138. |extradition|24: [24, 6.0]|
-|138. |party|27: [18, 6.0], 50: [10, 5.0]|
-|138. |russian|38: [12, 6.0], 51: [11, 5.5]|
-|138. |france|49: [12, 6.0]|
-|147. |crash|11: [23, 5.75]|
-|148. |vatican|8: [11, 5.5]|
-|148. |second|9: [11, 5.5]|
-|148. |even|9: [11, 5.5]|
-|148. |protesters|23: [11, 5.5]|
-|148. |world|23: [16, 5.333333333333333], 47: [11, 5.5]|
-|148. |former|35: [11, 5.5]|
-|148. |nuclear|45: [11, 5.5]|
-|155. |prime|20: [16, 5.333333333333333]|
-|156. |car|3: [10, 5.0]|
-|156. |europe|7: [10, 5.0]|
-|156. |south|7: [10, 5.0]|
-|156. |airlines|11: [20, 5.0]|
-|156. |campaign|13: [10, 5.0]|
-|156. |british|13: [10, 5.0]|
-|156. |investigation|13: [10, 5.0]|
-|156. |gay|14: [10, 5.0]|
-|156. |another|15: [10, 5.0]|
-|156. |al-bashir|15: [10, 5.0]|
-|156. |violence|16: [10, 5.0]|
-|156. |workers|20: [10, 5.0]|
-|156. |chinese|22: [10, 5.0]|
-|156. |accused|22: [15, 5.0]|
-|156. |rights|28: [10, 5.0]|
-|156. |killed|31: [10, 5.0], 45: [10, 5.0]|
-|156. |tanker|33: [10, 5.0]|
-|156. |boris|39: [20, 5.0]|
-|156. |says|44: [10, 5.0]|
-|156. |evo|46: [10, 5.0]|
-|156. |mr.|46: [10, 5.0]|
-|156. |government|49: [15, 5.0]|
+## Maximum Interestingness 2019 - New York Times: Exemplary results (min_weektotal=10, min_changerate=5)
+|row|Keyword|week: [ total , changerate ]| computed query (advanced)  | matching result (advanced) |
+|---|---|---|---|---|
+| 1. | charges | 2: [12, inf], 4: [12, 6.0] | charges former court | Impeachment |
+| 2. | officials | 2: [14, inf], 43: [11, 11.0] | officials say u.s. | Utah_Data_Center |
+| 3. | court | 2: [10, inf], 51: [16, inf] | court supreme former | Supreme_Court_of_the_United_States |
+| 4. | venezuela | 4: [20, 10.0], 18: [16, inf] | venezuela maduro opposition | Nicolás_Maduro |
+| 5. | maduro | 4: [16, 8.0], 8: [19, inf], 18: [10, inf] | maduro venezuela president | Nicolás_Maduro |
+| 6. | help | 5: [10, inf], 25: [10, 5.0] | help american trump | Ivanka_Trump |
+| 7. | election | 7: [12, 12.0], 11: [10, 10.0], 13: [14, 14.0], 25: [10, inf] | election minister prime | Prime_Minister_of_the_United_Kingdom |
+| 8. | report | 10: [10, inf] | report says government | Mueller_report |
+| 9. | black | 10: [11, inf] | black south africa | South_Africa |
+| 10. | border | 11: [10, 10.0], 14: [12, inf], 46: [12, 12.0] | border trump migrants | Trump_administration_migrant_detentions |
+| 11. | vote | 11: [11, inf], 37: [10, 5.0], 50: [10, inf] | vote brexit election | Causes_of_the_vote_in_favour_of_Brexit |
+| 12. | christchurch | 11: [14, inf] | christchurch zealand mosques | Christchurch_mosque_shootings |
+| 13. | mosques | 11: [14, inf] | mosques zealand two | Christchurch_mosque_shootings |
+| 14. | massacre | 11: [11, inf] | massacre zealand christchurch | Christchurch_mosque_shootings |
+| 15. | erdogan | 14: [10, inf] | erdogan president turkey | Recep_Tayyip_Erdoğan |
+| 16. | leaders | 14: [11, 5.5], 49: [10, inf] | leaders president trump | Donald_Trump |
+| 17. | india | 15: [15, 7.5], 18: [11, inf], 20: [10, 10.0], 51: [17, 5.67] | india modi pakistan | 2014_India–Pakistan_floods |
+| 18. | assange | 15: [10, inf] | assange julian wikileaks | Indictment_and_arrest_of_Julian_Assange |
+| 19. | north | 16: [13, 6.5], 25: [26, inf], 40: [11, 11.0] | north korea trump | North_Korea–United_States_relations |
+| 20. | notre-dame | 16: [33, inf] | notre-dame cathedral fire | Notre-Dame_de_Paris_fire |
+| 21. | cathedral | 16: [32, inf] | cathedral notre-dame fire | Notre-Dame_de_Paris_fire |
+| 22. | paris | 16: [14, inf], 40: [10, inf] | paris police fire | Paris_Police_Prefecture |
+| 23. | sri | 16: [16, inf] | sri lanka attacks | 2019_Sri_Lanka_Easter_bombings |
+| 24. | lanka | 16: [12, inf] | lanka sri attacks | 2019_Sri_Lanka_Easter_bombings |
+| 25. | attacks | 17: [32, 8.0], 38: [10, inf] | attacks sri lanka | 2019_Sri_Lanka_Easter_bombings |
+| 26. | sunday | 17: [17, inf] | sunday sri lanka | 2019_Sri_Lanka_Easter_bombings |
+| 27. | putin | 17: [10, inf] | putin russia president | Vladimir_Putin |
+| 28. | protest | 18: [11, inf], 27: [10, 5.0], 30: [10, inf] | protest hong kong | 2019–20_Hong_Kong_protests |
+| 29. | opposition | 18: [12, inf] | opposition leader venezuela | Juan_Guaidó |
+| 30. | guaidó | 18: [12, inf] | guaidó venezuela juan | Juan_Guaidó |
+| 31. | crisis | 18: [12, inf] | crisis political venezuela | Crisis_in_Venezuela_during_the_Bolivarian_Revolution |
+| 32. | fani | 18: [10, inf] | fani cyclone india | Cyclone_Fani |
+| 33. | iraq | 19: [11, inf] | iraq iran u.s. | Iran–Iraq_War |
+| 34. | last | 19: [10, inf] | last year month | The_Last_Month_of_the_Year |
+| 35. | forces | 21: [10, 5.0], 31: [10, inf] | forces u.s. syria | Syrian_Democratic_Forces |
+| 36. | union | 21: [12, 6.0], 42: [10, inf] | union european brexit | Brexit |
+| 37. | political | 22: [10, 5.0], 29: [14, 14.0], 42: [10, 5.0], 51: [12, inf] | political minister president | Minister_President_of_Prussia |
+| 38. | boat | 22: [13, inf] | boat fishing people | Traditional_fishing_boat |
+| 39. | wife | 22: [10, inf] | wife former husband | Trophy_wife |
+| 40. | iran | 24: [13, inf] | iran u.s. trump | Iran–United_States_relations |
+| 41. | shooting | 25: [12, inf] | shooting police zealand | Christchurch_mosque_shootings |
+| 42. | must | 25: [11, inf] | must court former | Supreme_Court_of_the_United_States |
+| 43. | climate | 25: [10, inf] | climate change president | United_Nations_Climate_Change_conference |
+| 44. | mexico | 25: [10, 10.0], 45: [10, inf] | mexico president trump | Donald_Trump |
+| 45. | around | 25: [10, inf] | around world china | Around_the_World_in_Eighty_Days |
+| 46. | g | 26: [11, inf] | g trump president | Donald_Trump |
+| 47. | japan | 26: [10, inf], 41: [12, 6.0] | japan korea south | Japan–South_Korea_relations |
+| 48. | kashmir | 32: [13, inf] | kashmir india pakistan | 2014_India–Pakistan_floods |
+| 49. | iranian | 33: [10, inf], 39: [10, 10.0] | iranian iran u.s. | Iran–United_States_relations |
+| 50. | prince | 34: [11, inf] | prince saudi andrew | Prince_Andrew,_Duke_of_York |
+| 51. | fires | 34: [23, inf] | fires amazon brazil | 2019_Amazon_rainforest_wildfires |
+| 52. | amazon | 34: [14, inf] | amazon fires brazil | 2019_Amazon_rainforest_wildfires |
+| 53. | residents | 36: [10, inf] | residents government island | Norfolk_Island |
+| 54. | pope | 36: [10, inf] | pope francis church | Pope_Francis |
+| 55. | francis | 36: [11, inf] | francis pope abuse | Catholic_Church_sexual_abuse_cases |
+| 56. | australia | 37: [12, inf] | australia china australian | Chinese_Australians |
+| 57. | netanyahu | 37: [13, inf], 47: [10, inf] | netanyahu israel prime | Benjamin_Netanyahu |
+| 58. | israel | 37: [14, inf] | israel netanyahu minister | Sara_Netanyahu |
+| 59. | gantz | 38: [10, inf] | gantz netanyahu benny | Benny_Gantz |
+| 60. | trudeau | 38: [15, inf] | trudeau minister justin | Justin_Trudeau |
+| 61. | peru | 40: [12, inf] | peru president congress | President_of_Peru |
+| 62. | kurds | 41: [12, inf] | kurds syria turkey | Kurds_in_Syria |
+| 63. | kurdish | 41: [11, inf] | kurdish syria turkey | Kurds_in_Syria |
+| 64. | turkey | 41: [15, inf] | turkey erdogan president | Recep_Tayyip_Erdoğan |
+| 65. | troops | 41: [10, inf] | troops u.s. trump | Foreign_policy_of_the_Donald_Trump_administration |
+| 66. | syrian | 41: [13, inf] | syrian syria isis | Syrian_civil_war |
+| 67. | militia | 41: [11, inf] | militia syria turkey | Turkish_involvement_in_the_Syrian_civil_war |
+| 68. | turkish | 41: [10, inf] | turkish syria turkey | Syria–Turkey_relations |
+| 69. | typhoon | 41: [16, inf] | typhoon japan storm | 2020_Pacific_typhoon_season |
+| 70. | amid | 42: [11, inf] | amid president country | List_of_presidents_who_did_not_win_reelection |
+| 71. | lawmakers | 42: [19, inf] | lawmakers brexit parliament | Brexit_withdrawal_agreement |
+| 72. | al-baghdadi | 43: [10, inf] | al-baghdadi leader isis | Abu_Bakr_al-Baghdadi |
+| 73. | mining | 45: [10, inf] | mining dam company | Vale_S.A. |
+| 74. | macron | 49: [12, inf] | macron president france | Emmanuel_Macron |
+| 75. | eruption | 50: [11, inf] | eruption zealand white | 2019_Whakaari_/_White_Island_eruption |
+| 76. | white | 50: [10, inf] | white house iran | White_House_Down |
+| 77. | nobel | 50: [10, inf] | nobel prize peace | Nobel_Peace_Prize |
+| 78. | base | 50: [10, inf] | base afghan u.s. | War_in_Afghanistan_(2001–present) |
+| 79. | christmas | 52: [18, inf] | christmas holiday first | Christmas_and_holiday_season |
