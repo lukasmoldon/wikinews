@@ -76,22 +76,27 @@ def createPDFwithBothPlots(word):
     None
 
     """
-    fig = plt.figure()
-    fig.subplots_adjust(hspace=0.4, wspace=0.4)
+    fig = plt.figure(figsize=(5,5))
     
     axis1 = fig.add_subplot(211)
+    plt.xticks(rotation=30)
     plt.plot(word.ts_articles.getDates(),word.ts_articles.getCounts())
     plt.title(word.keyword)
     
+    fig.subplots_adjust(hspace=0.65, wspace=0.4)
+
     axis2 = fig.add_subplot(212)
+    plt.xticks(rotation=30)
     x, y = wiki.get_counts(word.wikipediaSite,word.ts_articles.getDates()[0],word.ts_articles.getDates()[-1], language_edition="en")
     if x != [] and y != []:
         plt.plot(x,y)
         plt.title("{} ({})".format(word.keyword, "en"))
-        axis2.set_xlabel("Correlation: " + str(statistics.getCorrelation(word.ts_articles.getCounts(),word.ts_wiki.getCounts())))
-        plt.show()
+        axis2.set_xlabel("Correlation: " + str(statistics.getCorrelation(word.ts_articles.getCounts(),word.ts_wiki.getCounts())),labelpad=20)
+        #plt.show()
     
-    plt.tight_layout(pad=2, w_pad=2, h_pad=2)
+
+    plt.tight_layout(pad=10, w_pad=10, h_pad=10)
+    plt.gcf().subplots_adjust(bottom=0.22)
     fig.savefig('./correlation_shuffled/' + word.keyword + '.png')
     
 
