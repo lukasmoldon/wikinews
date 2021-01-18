@@ -118,19 +118,13 @@ def run(n):
     resultsB = [output.get() for p in processes]
     logging.info("Done with part B.")
     random_collection = []
-    random_size = []
     for el in resultsB:
         if len(el) == 2:
             if el[0] == 0:
                 print("Mean correlation in original data: {}".format(el[1]))
-                print("Number keywords in original data: {}".format(len(m[0])))
             else:
                 random_collection.append(el[1])
-                random_size.append(len(m[el[0]]))
     print("Mean correlation in {} random samples: {}".format(n, statistics.mean_confidence_interval(random_collection)))
-    print("Mean number keywords in {} random samples: {}".format(n, statistics.mean_confidence_interval(random_size)))
-    print("Number keywords of each sample:")
-    print(random_size)
     print("Correlation of each sample:")
     print(random_collection)
 
