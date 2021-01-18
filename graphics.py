@@ -90,7 +90,7 @@ def createPDFwithBothPlots(word):
     x, y = wiki.get_counts(word.wikipediaSite,word.ts_articles.getDates()[0],word.ts_articles.getDates()[-1], language_edition="en")
     if x != [] and y != []:
         plt.plot(x,y)
-        plt.title("{} ({})".format(word.keyword, "en"))
+        plt.title(format(word.wikipediaSite))
         axis2.set_xlabel("Correlation: " + str(statistics.getCorrelation(word.ts_articles.getCounts(),word.ts_wiki.getCounts())),labelpad=20)
         #plt.show()
     
