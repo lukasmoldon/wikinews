@@ -144,19 +144,3 @@ respective newspaper.
 | 7. | says | 41: [10, inf] | says 's trump | Donald_Trump |
 | 8. | first | 45: [10, inf] | first world 's | First_World |
 | 9. | strasbourg | 50: [11, inf] | strasbourg shooting suspect | 2018_Strasbourg_attack |
-| 10. | thai | 27: [16, 16.0] | thai cave rescue | Tham_Luang_cave_rescue |
-| 11. | strikes | 15: [15, 15.0] | strikes syria 's | 2018_missile_strikes_against_Syria |
-| 12. | jamal | 41: [14, 14.0] | jamal khashoggi saudi | Jamal_Khashoggi |
-| 13. | may | 5: [10, 10.0], 15: [13, 13.0] | may briefing 's | James_S._Brady_Press_Briefing_Room |
-| 14. | military | 15: [12, 12.0] | military 's us | Military_budget_of_the_United_States |
-| 15. | summit | 21: [12, 12.0] | summit trump north | 2018_North_Korea–United_States_Singapore_Summit |
-| 16. | rescue | 27: [11, 11.0] | rescue cave thai | Tham_Luang_cave_rescue |
-| 17. | khashoggi | 41: [22, 11.0] | khashoggi jamal saudi | Jamal_Khashoggi |
-| 18. | syria | 15: [50, 10.0] | syria 's us | American-led_intervention_in_the_Syrian_Civil_War |
-| 19. | abortion | 21: [27, 9.0] | abortion ireland 's | Abortion_in_the_Republic_of_Ireland |
-| 20. | ireland | 21: [16, 8.0] | ireland abortion 's | Abortion_in_the_Republic_of_Ireland |
-| 21. | cave | 27: [16, 8.0] | cave thai rescue | Tham_Luang_cave_rescue |
-| 22. | trump | 10: [10, 5.0], 28: [11, 5.5] | trump 's us | Donald_Trump |
-| 23. | uk | 15: [11, 5.5] | uk 's letters | List_of_Latin_phrases_(P) |
-| 24. | zimbabwe | 31: [11, 5.5] | zimbabwe election opposition | 2018_Zimbabwean_general_election |
-| 25. | saudi | 41: [15, 5.0] | saudi khashoggi arabia | Jamal_Khashoggi |
