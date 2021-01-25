@@ -79,7 +79,7 @@ respective newspaper
 | 49. | many | Many | many say country | COVID-19_pandemic_by_country_and_territory |
 | 50. | european | European | european union brexit | Impact_of_Brexit_on_the_European_Union |
 
-## Maximum Interestingness 2019 - New York Times: Exemplary results (min_weektotal=10, min_changerate=5)
+## Maximum Interestingness 2019 - New York Times: Exemplary results (min_weektotal=10, min_changerate=inf)
 
 - These tables only consider keywords in articles, which have been categorized as 'world news articles' by the
 respective newspaper. 

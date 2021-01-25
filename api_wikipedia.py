@@ -3,7 +3,7 @@ import time
 import datetime
 import requests
 
-def get_counts(title, start, end, language_edition="en"):
+def get_counts(title, start, end, email, language_edition="en"):
     """
     Get the daily pageviews of an wikipedia article (uses wikipedia API).
 
@@ -23,6 +23,8 @@ def get_counts(title, start, end, language_edition="en"):
         First day of pageview statistic.
     end : datetime.date
         Last day of pageview statistic.
+    email : str
+        Your personal or institutional e-mail address for the request header (providing the possibility to be contacted by Wikipedia)
     language_edition : str
         Selector for the language edition of wikipedia (default is ``en`` for English, see Notes).
 
@@ -38,9 +40,13 @@ def get_counts(title, start, end, language_edition="en"):
     timestamp_list = []
     viewcount_list = []
     url = "https://wikimedia.org/api/rest_v1/metrics/pageviews/per-article/{}.wikipedia/all-access/all-agents/{}/daily/{}/{}" # https://www.mediawiki.org/wiki/API:Etiquette
+    header = {
+    'User-Agent': 'WikipediaNews 1.0',
+    'From': email 
+    }
     url_start = str(start).replace("-","")
     url_end = str(end).replace("-","")
-    response = requests.get(url.format(language_edition, title, url_start, url_end))
+    response = requests.get(url.format(language_edition, title, url_start, url_end), headers=header)
     if response.status_code == 200:
         try:
             for item in response.json()["items"]:
@@ -55,7 +61,7 @@ def get_counts(title, start, end, language_edition="en"):
         return None
     return timestamp_list, viewcount_list
 
-def search_articles(keywords, nmax=10, date=None, timeout=10):
+def search_articles(keywords, email, nmax=10, date=None, timeout=10):
     """
     Get ranked search results of wikipedia articles for given keywords belonging to the same topic (uses wikipedia API).
 
@@ -73,6 +79,8 @@ def search_articles(keywords, nmax=10, date=None, timeout=10):
     ----------
     keywords : str or list of str
         Keyword(s) for the query (argument for the search).
+    email : str
+        Your personal or institutional e-mail address for the request header (providing the possibility to be contacted by Wikipedia)
     nmax : int
         Maximum number of wikipedia articles which should be returned (can be less depending on number of found results).
     date : datetime.date
@@ -96,7 +104,11 @@ def search_articles(keywords, nmax=10, date=None, timeout=10):
         "list": "search",
         "srsearch": keywords
     }
-    response = requests.get(url=url, params=params)
+    header = {
+    'User-Agent': 'WikipediaNews 1.0',
+    'From': email 
+    }
+    response = requests.get(url=url, params=params, headers=header)
     if response.status_code == 200:
         ranking = {}
         i = 1
@@ -121,7 +133,7 @@ def search_articles(keywords, nmax=10, date=None, timeout=10):
         return {}
     return ranking
 
-def get_creationdate(title):
+def get_creationdate(title, email):
     """
     Get the date of creation of a given wikipedia article.
 
@@ -133,6 +145,8 @@ def get_creationdate(title):
     ----------
     title : str
         Title of the wikipedia article (https://en.wikipedia.org/wiki/``title``).
+    email : str
+        Your personal or institutional e-mail address for the request header (providing the possibility to be contacted by Wikipedia)
     
     Returns
     -------
@@ -152,7 +166,11 @@ def get_creationdate(title):
         "formatversion": "2",
         "format": "json"
     }
-    response = requests.get(url=url, params=params)
+    header = {
+    'User-Agent': 'WikipediaNews 1.0',
+    'From': email 
+    }
+    response = requests.get(url=url, params=params, headers=header)
     if response.status_code == 200:
         i = 1
         try:
@@ -165,7 +183,7 @@ def get_creationdate(title):
         return None
 
 
-#print(search_articles("9/11"))
+print(search_articles("9/11"))
 #print(search_articles(["9/11", "attacks", "New", "York"]))
 #print(get_creationdate("September_11_attacks"))
 #print(get_creationdate("Aftermath_of_the_September_11_attacks"))
