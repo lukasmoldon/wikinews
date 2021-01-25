@@ -1,10 +1,8 @@
-## Wikinews (CSSH Forschungspraktikum)
-A survey on wikipedia indicates, that things that pop up in the news are frequently being browsed for. We would like to explore the hypothesis further by using a news webpage like nytimes and comparing topics with the viewcounts of wikipedia articles.  
+## Wikinews
+Wikipedia is an important knowledge database which nowadays has over [five billion visits per month](https://de.statista.com/statistik/daten/studie/1021463/umfrage/anzahl-der-visits-pro-monat-von-wikipediaorg/). A [survey in 2016 on the platform](https://arxiv.org/abs/1702.05379) indicates, that topics which pop up in news media are frequently searched on Wikipedia. Readers of newspaper articles may use Wikipedia to gain additional knowledge about specific topics mentioned in the news. In this project we investigated whether news articles influence the views of Wikipedia sites using data of the [New York Times](https://developer.nytimes.com/) and [The Guardian](https://open-platform.theguardian.com/). We developed concepts to gather the key topics of news articles and to restrict our analysis to relevant content. Moreover we introduce a matching procedure to connect news topics with Wikipedia pages. After applying our methods we find a positive correlation between news occurrencesand related Wikipedia sites for a majority of the topics. [We explain our methods and discuss our findings in a report](https://github.com/lukasmoldon/wikinews/blob/master/paper.pdf).
 
 ## Data
-
-To explore wikipedia pageview count manually and to compare it with our results, you can use [this web-interface](https://pageviews.toolforge.org/?project=en.wikipedia.org&platform=all-access&agent=user&redirects=0&start=2019-01-01&end=2019-12-31&pages=) for single requests instead of calling the API.
-
+### Data from the news
 [>> Data access <<](https://rwth-aachen.sciebo.de/s/dHIeP453099jjvZ)
 
 |file suffix|restrictions|articles (nyt)|articles (theguardian)|
@@ -13,8 +11,11 @@ To explore wikipedia pageview count manually and to compare it with our results,
 |_reduced|world news articles published in 2001 or later|213.535|168.328|
 |_partition|world news articles published in January 2001|678|603|
 |_ground_truth|randomly selected world news articles published in 2001 or later **manually labeled** with related wikipedia links (for measuring accuracy of matching algorithms)|200|200|
+### Data from Wikipedia
+To explore wikipedia pageview counts manually and to compare it with our results, you can use [this web-interface](https://pageviews.toolforge.org/?project=en.wikipedia.org&platform=all-access&agent=user&redirects=0&start=2019-01-01&end=2019-12-31&pages=) for single requests instead of calling the API.
 
-## Top keywords 2019 - New York Times: Exemplary results
+## Results
+### Top keywords 2019 - New York Times: Exemplary results
 
 - These tables only consider keywords in articles, which have been categorized as 'world news articles' by the   
 respective newspaper
@@ -79,7 +80,7 @@ respective newspaper
 | 49. | many | Many | many say country | COVID-19_pandemic_by_country_and_territory |
 | 50. | european | European | european union brexit | Impact_of_Brexit_on_the_European_Union |
 
-## Maximum Interestingness 2019 - New York Times: Exemplary results (min_weektotal=10, min_changerate=inf)
+### Maximum Interestingness 2019 - New York Times: Exemplary results (min_weektotal=10, min_changerate=inf)
 
 - These tables only consider keywords in articles, which have been categorized as 'world news articles' by the
 respective newspaper. 
