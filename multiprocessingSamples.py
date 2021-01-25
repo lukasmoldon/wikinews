@@ -26,6 +26,10 @@ mananger = mp.Manager()
 output = mananger.Queue()
 
 def single_run_partA(pid, articles):
+    '''
+    First part of a single run of a single process: Stops after interestingness was computed.
+
+    '''
     logging.info("Starting PID {}".format(pid))
     if pid > 0:
         # create random sample and compute correlation
@@ -54,6 +58,10 @@ def single_run_partA(pid, articles):
     output.put([pid,keywords,words])
     
 def single_run_partB(pid, m, words):
+    '''
+    Second part of a single run of a single process: Starts after matching is done for all processes and computes correlation.
+
+    '''
     logging.debug("PID {}: G".format(pid))
     words_analyze = [x for x in words if x.wikipediaSite != ""]
     logging.debug("PID {}: H".format(pid))
@@ -73,6 +81,10 @@ def single_run_partB(pid, m, words):
     logging.info("Finished PID {}".format(pid))
 
 def run(n):
+    '''
+    Main function which starts and collects all processes. Matching is a critical section due to API calls and gets computed sequentially here.
+
+    '''
     logging.info("Loading initial data ...")
     # Load all articles from 2019
     articles_original = mng.load_articles("nyt2019.json")
@@ -86,6 +98,7 @@ def run(n):
         p.join()
     resultsA = [output.get() for p in processes]
     logging.info("Done with part A.")
+    # ---------------------------------------- START OF CRITICAL SECTION ----------------------------------------
     m = {}
     res = {}
     logging.info("Matching...")
@@ -109,7 +122,7 @@ def run(n):
                 print("ERROR: Key is invalid")
         res[el[0]] = el[2]
     logging.info("Done with matching.")
-
+    # ---------------------------------------- END OF CRITICAL SECTION ----------------------------------------
     processes = [mp.Process(target=single_run_partB, args=(pid, deepcopy(m[pid]), deepcopy(res[pid]))) for pid in range(n+1)]
     for p in processes:
         p.start()

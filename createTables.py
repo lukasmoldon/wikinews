@@ -11,6 +11,30 @@ import multiprocessing as mp
 
 
 def createYearlyDatabase(path_source, path_result, year):
+    """
+    Creates a database at ``path_results`` of world news articles for a given ``year`` using data from ``path_source``.
+
+    Notes
+    -----
+    1.) Note that this function discards all items, which do not belong to the world news article section.
+    2.) Works with NYT and TheGuardian data.
+
+    Parameters
+    ----------
+    path_source : str
+        Path on local machine where article database is located.
+    path_result : str
+        Path on local machine where resulting article dataset should be stored.
+    year : int
+        Year of publication of targeted articles (filter parameter).
+    
+
+    Returns
+    -------
+    dict
+        Dict of article data in JSON format. 
+
+    """
     data = mng.load_articles(path_source)
     if "guardian" in path_source.lower():
         data = mng.filter_articles(data, {"document_type": ["article"], "section_name": ["World news"]}, start=date(year,1,1), end=date(year,12,31))
@@ -19,6 +43,23 @@ def createYearlyDatabase(path_source, path_result, year):
     mng.store_articles(data, path_result)
 
 def compute_topKeywordsTable(path_source, path_result, n=50):
+    """
+    Creates a Markdown table at ``path_results`` with the ``n`` most frequent (top) keywords of the database at ``path_source``. 
+
+    Parameters
+    ----------
+    path_source : str
+        Path on local machine where article database is located.
+    path_result : str
+        Path on local machine where resulting Markdown table should be stored.
+    n : int
+        Number of top keywords in the table (default is 50).
+    
+    Returns
+    -------
+    None 
+
+    """
     articles = mng.load_articles(path_source)
     # Get a dict of dicts for each calendar week with word frequencies from getWordCounts
     wordCounts = mng.getWordCounts(articles)
@@ -57,6 +98,29 @@ def compute_topKeywordsTable(path_source, path_result, n=50):
     writer.close()
 
 def compute_mostInterestingKeywordsTable(path_source, path_result, min_weektotal=10, min_changerate=5):
+    """
+    Creates a Markdown table at ``path_results`` with the most interesting keywords of the database at ``path_source``. 
+
+    Keywords must fulfill the following two conditions in at least one (and the same) week:
+    1. Keyword was mentioned at least ``min_weektotal`` in that week.
+    2. Keyword has a relative changerate of mentions of ``min_changerate`` compared to the previous week.
+
+    Parameters
+    ----------
+    path_source : str
+        Path on local machine where article database is located.
+    path_result : str
+        Path on local machine where resulting Markdown table should be stored.
+    min_weektotal : int
+        Minimum number of total mentions in at least one week (default is 10).
+    min_changerate : int
+        Minimum number for the relative changerate of mentions compared to the previous week (default is 5).
+    
+    Returns
+    -------
+    None 
+
+    """
     articles = mng.load_articles(path_source)
     # Get a dict of dicts for each calendar week with word frequencies from getWordCounts
     wordCounts = mng.getWordCounts(articles)
@@ -70,7 +134,7 @@ def compute_mostInterestingKeywordsTable(path_source, path_result, min_weektotal
     words = []
     for c in countsPerWeek:
         words.append(wpy.Word(c[0],ts_articles=timeseries.Timeseries(c[1])))
-    # COmpute interestingness
+    # Compute interestingness
     interestingWords = mng.filter_interestingness(articles, min_weektotal=min_weektotal, min_changerate=min_changerate)
     res = {}
     keywords = []
