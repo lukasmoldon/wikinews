@@ -3,7 +3,7 @@ Wikipedia is an important knowledge database which nowadays has over [five billi
 
 ## Data
 ### Data from the news
-[>> Data access <<](https://rwth-aachen.sciebo.de/s/dHIeP453099jjvZ)
+Due to the [terms and conditions](https://www.theguardian.com/open-platform/terms-and-conditions) of TheGuardian, it is practically impossible to provide access to our dataset without violating their policy (see paragraph 5 - Lifecycle of OP Content). However, you can create your own dataset with a personal API key and our code, [which will be explained below](https://github.com/lukasmoldon/wikinews#How-to-use). In our research project we created and used the following datasets:
 
 |file suffix|restrictions|articles (nyt)|articles (theguardian)|
 |----------------|-------------------------------|-----------------------------|-----------------------------|
@@ -12,10 +12,32 @@ Wikipedia is an important knowledge database which nowadays has over [five billi
 |_partition|world news articles published in January 2001|678|603|
 |_ground_truth|randomly selected world news articles published in 2001 or later **manually labeled** with related wikipedia links (for measuring accuracy of matching algorithms)|200|200|
 ### Data from Wikipedia
-To explore wikipedia pageview counts manually and to compare it with our results, you can use [this web-interface](https://pageviews.toolforge.org/?project=en.wikipedia.org&platform=all-access&agent=user&redirects=0&start=2019-01-01&end=2019-12-31&pages=) for single requests instead of calling the API.
+In our research project we did not create a dataset of Wikipedia data, but requested necessary information from the Wikipedia API in real time on demand. If you want to access this data you can (use our code)[https://github.com/lukasmoldon/wikinews/blob/master/api_wikipedia.py] or to explore wikipedia pageview counts manually and to compare it with our results, you can use [this web-interface](https://pageviews.toolforge.org/?project=en.wikipedia.org&platform=all-access&agent=user&redirects=0&start=2019-01-01&end=2019-12-31&pages=) for single requests instead of calling the API.
 
+## Code
+:arrow_forward: For more detailed information, use the corresponding link to the [docsring](https://numpydoc.readthedocs.io/en/latest/format.html) at the end of each descirption.
+* **TextPreprocessing.py** - Contains functions which preprocess text from news articles, including stopword removal and stemming. It also provides more sophisticated methods of linguistics theory to preprocess text, which were discarded for our project.
+* **api_nyt.py** - Computes the dataset of NYT articles by accessing the API from The New York Times Developer Network.
+* **api_theguardian.py** - Computes the dataset of TheGuardian articles by accessing the API from The Guardian Open Platform.
+* **api_wikipedia.py** - Provides all functions which will be used in our analysis to access the Wikipedia API (requesting daily pageview statistics of Wikipedia articles, searching related Wikipedia articles and requesting creation dates of articles).
+* **createTables.py** - Represents the main file with general functionalities, like creating yearly datasets or computing a subset of keywords ([see below](https://github.com/lukasmoldon/wikinews#How-to-use)).
+* **graphics.py** - Contains all functions which create plots for our paper.
+* **manage_articles.py** - Contains functions to handle article datasets, including more sophisticated methods like the co-occurrence.
+* **matching.py** - Includes all matching approaches from our paper, where news meda topics get matched with Wikipedia articles.
+* **multiprocessingSamples.py** - This script computes a set of random article datasets, where publication dates were shuffled, using a multiprocessing approach for servers.
+* **notebook.ipynb** - Here we apply many different methods from our repository on the datasets to provide an overview on the code functionalities.
+* **statistics.py** - Collection of statistical functions which we use in our project, e.g. for measuring correlation or computing confidence intervals.
+* **timeseries.py** - Class and methods to store and manage daily wikipedia counts.
+* **word.py** - Class to add additional information to a keyword like timeseries of the news and Wikipedia, co-occurrences and the matched Wikipedia site.
+
+## How to use
+* **1.** Request API keys for [The New York Times Developer Network](https://developer.nytimes.com/get-started) and [The Guardian Open Platform](https://open-platform.theguardian.com/access/)
+* **2.** Use your API keys and the function calls at the bottom of `api_nyt.py` ([here](https://github.com/lukasmoldon/wikinews/blob/master/api_nyt.py#L78-L81)) and `api_theguardian.py` ([here](https://github.com/lukasmoldon/wikinews/blob/master/api_theguardian.py#L93-L96)) to start downloading the datasets.
+* **3.** You can now create yearly datasets and compute top and most interesting keywords using the function calls [here (without multiprocessing)](https://github.com/lukasmoldon/wikinews/blob/master/createTables.py#L13-L43) and [here (using multiprocessing)](https://github.com/lukasmoldon/wikinews/blob/master/createTables.py#L171-L190)
 ## Results
-### Top keywords 2019 - New York Times: Exemplary results
+
+All results are stored [here](https://github.com/lukasmoldon/wikinews/tree/master/results) and get explained in our [paper](https://github.com/lukasmoldon/wikinews/blob/master/paper.pdf)]. Below you can find exemplary results for the NYT dataset in 2019.
+### Top keywords 2019 - New York Times
 
 - These tables only consider keywords in articles, which have been categorized as 'world news articles' by the   
 respective newspaper
@@ -80,7 +102,7 @@ respective newspaper
 | 49. | many | Many | many say country | COVID-19_pandemic_by_country_and_territory |
 | 50. | european | European | european union brexit | Impact_of_Brexit_on_the_European_Union |
 
-### Maximum Interestingness 2019 - New York Times: Exemplary results (min_weektotal=10, min_changerate=inf)
+### Maximum Interestingness 2019 - New York Times
 
 - These tables only consider keywords in articles, which have been categorized as 'world news articles' by the
 respective newspaper. 
