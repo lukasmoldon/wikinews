@@ -76,6 +76,6 @@ def download_articles(api_key, path_results, start, end):
 
 
 # file: nyt.json ( 01.01.2001 - 01.10.2020 )
-#download_articles("ldxpB4fi05f1WdxlQOPVKPYn9WaAgvry", "/home/lmoldon/forschungspraktikum/nyt.json", date(2001, 1, 1), date(2020, 10, 1))
+#download_articles("__KEY__", "/home/lmoldon/forschungspraktikum/nyt.json", date(2001, 1, 1), date(2020, 10, 1))
 # file: nyt_partition.json ( 01.01.2001 - 31.01.2001 ) (start = end (!) due to monthly scraping/download)
-#download_articles("ldxpB4fi05f1WdxlQOPVKPYn9WaAgvry", "/home/lmoldon/forschungspraktikum/nyt_partition.json", date(2001, 1, 1), date(2001, 1, 1))
+#download_articles("__KEY__", "/home/lmoldon/forschungspraktikum/nyt_partition.json", date(2001, 1, 1), date(2001, 1, 1))

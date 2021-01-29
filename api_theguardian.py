@@ -91,6 +91,6 @@ def download_articles(api_key, path_results, start, end):
 
 
 # file: theguardian.json ( 01.01.2001 - 01.10.2020 )
-#download_articles("f9f9bc35-de69-42ce-8089-3f786f325643", "/home/lmoldon/forschungspraktikum/theguardian.json", date(2001, 1, 1), date(2020, 10, 1))
+#download_articles("__KEY__", "/home/lmoldon/forschungspraktikum/theguardian.json", date(2001, 1, 1), date(2020, 10, 1))
 # file: theguardian_partition.json ( 01.01.2001 - 31.01.2001 )
-#download_articles("f9f9bc35-de69-42ce-8089-3f786f325643", "/home/lmoldon/forschungspraktikum/theguardian_partition.json", date(2001, 1, 1), date(2001, 1, 31))
+#download_articles("__KEY__", "/home/lmoldon/forschungspraktikum/theguardian_partition.json", date(2001, 1, 1), date(2001, 1, 31))
